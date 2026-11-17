@@ -127,7 +127,6 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 <div id="activitySheet" role="dialog" aria-modal="true" aria-label="Registrar actividad">
  <div class="activity-panel"><div class="sheet-handle"></div>
   <div class="activity-grid">
-   <button class="activity-option" data-activity="night_wake"><span class="activity-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M28 7a14 14 0 1 0 13 22A16 16 0 0 1 28 7Z" fill="#C6B8FF"/><path d="m12 34 3-4 3 4 3-4 3 4" stroke="#9FE5FF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="m34 33 2-3 2 3" stroke="#9FE5FF" stroke-width="2.5" fill="none"/></svg></span><span>Despertar por la noche</span></button>
    <button class="activity-option" data-activity="bottle"><span class="activity-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 8h10v6l4 5v20a4 4 0 0 1-4 4H19a4 4 0 0 1-4-4V19l4-5Z" fill="#B9E5FF" stroke="#8ED7F2" stroke-width="2"/><path d="M20 8V5h8v3M15 24h18" stroke="#FFF0B5" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M19 30h10" stroke="#77CBEA" stroke-width="3" stroke-linecap="round"/></svg></span><span>Toma de biberón</span></button>
    <button class="activity-option" data-activity="breastfeed"><span class="activity-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="13" r="7" fill="#F3C5D8"/><path d="M12 39c1-9 5-15 12-15s11 6 12 15" fill="#A9E6D2"/><path d="M19 29c3 3 7 3 10 0" stroke="#FFF" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span><span>Lactancia</span></button>
    <button class="activity-option" data-activity="pump"><span class="activity-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M17 9h14v5l4 5v20H13V19l4-5Z" fill="#A9E6F2" stroke="#8DD5E7" stroke-width="2"/><path d="M20 9V5h8v4M17 25h14M21 31h6" stroke="#E8F6FF" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span><span>Extracción de leche</span></button>
@@ -180,7 +179,7 @@ $('openActivities').onclick=()=>activitySheet.classList.add('open');
 $('activityClose').onclick=()=>activitySheet.classList.remove('open');
 activitySheet.addEventListener('click',e=>{if(e.target===activitySheet)activitySheet.classList.remove('open')});
 document.querySelectorAll('[data-activity]').forEach(b=>b.onclick=()=>{
- const names={nap:'Siesta',night_wake:'Despertar por la noche',bottle:'Toma de biberón',breastfeed:'Lactancia',pump:'Extracción de leche',solids:'Sólidos',diaper:'Cambio de pañal',temperature:'Temperatura',medicine:'Medicina'};
+ const names={nap:'Siesta',bottle:'Toma de biberón',breastfeed:'Lactancia',pump:'Extracción de leche',solids:'Sólidos',diaper:'Cambio de pañal',temperature:'Temperatura',medicine:'Medicina'};
  activitySheet.classList.remove('open');
  if(b.dataset.activity==='wake'){openWakeClock();return}
  if(b.dataset.activity==='breastfeed')$('type').value='feed';
