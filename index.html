@@ -249,6 +249,11 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 .solids-actions{display:flex;gap:10px;margin-top:16px}
 .solids-actions button{flex:1;min-height:50px;font-size:15px}
 @media(max-height:740px){.solids-panel{max-height:84dvh;padding-top:10px}.solids-panel h2{margin:2px 0 10px}.solids-clock{font-size:40px}.solids-hero{margin-bottom:8px}.solids-field{margin:10px 0 6px}.solids-quantity{margin:4px 0}.solids-quantity button{width:50px;height:50px;flex-basis:50px}.solids-quantity input{font-size:28px}.solids-unit{margin-bottom:8px}.solids-panel textarea{min-height:58px}.solids-actions{margin-top:10px}}
+
+/* El panel de Sólidos se ajusta al contenido: elimina el hueco inferior */
+#solidsSheet{align-items:flex-end}
+#solidsSheet .solids-panel{height:auto!important;min-height:0!important;max-height:calc(100dvh - 120px)!important;padding-bottom:calc(18px + env(safe-area-inset-bottom))!important;overflow-y:auto}
+@media(max-height:740px){#solidsSheet .solids-panel{height:auto!important;min-height:0!important;max-height:calc(100dvh - 105px)!important;padding-bottom:calc(14px + env(safe-area-inset-bottom))!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
