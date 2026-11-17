@@ -221,6 +221,14 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 .diaper-save:active{transform:translateX(-50%) scale(.96)}
 @media(max-width:380px){.diaper-option .diaper-symbol{width:62px;height:62px;font-size:28px}.diaper-option{font-size:14px}}
 @media(max-height:760px){.diaper-panel{height:90dvh;max-height:90dvh;padding-top:34px;padding-bottom:104px}.diaper-hero{margin-top:4px}.diaper-icon{font-size:48px}.diaper-title{font-size:24px;margin:12px 0 16px}.diaper-clock{font-size:48px}.diaper-today{font-size:17px;margin-top:7px}.diaper-field-title{font-size:17px;margin:20px 0 10px}.diaper-option .diaper-symbol{width:58px;height:58px;font-size:26px}.diaper-option{font-size:13px;gap:6px}.diaper-notes{height:112px;font-size:16px;padding:18px 22px}.diaper-save{width:72px;height:72px;font-size:30px;bottom:16px}}
+
+/* Ajustes finales: pictogramas claros y guardar sin superponerse */
+.diaper-panel{padding-bottom:28px}
+.diaper-icon{display:flex;justify-content:center;align-items:center}
+.diaper-option .diaper-symbol{font-size:initial}
+.diaper-save{position:relative;left:auto;bottom:auto;transform:none;margin:28px auto 8px;width:92px;height:92px}
+.diaper-save:active{transform:scale(.96)}
+@media(max-height:760px){.diaper-panel{padding-bottom:24px}.diaper-save{width:72px;height:72px;margin:22px auto 6px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
@@ -320,13 +328,13 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 
 <div id="diaperSheet" role="dialog" aria-modal="true" aria-label="Registrar cambio de pañal">
  <div class="diaper-panel"><div class="diaper-handle"></div>
-  <div class="diaper-hero"><div class="diaper-icon">🩲</div><div class="diaper-title">Cambio de pañal</div><div class="diaper-clock" id="diaperClock"></div><div class="diaper-today">Hoy</div></div>
+  <div class="diaper-hero"><div class="diaper-icon"><svg viewBox="0 0 96 72" width="96" height="72" fill="none" aria-hidden="true"><path d="M12 9Q48 2 84 9L78 48Q75 57 56 59L48 69 40 59Q21 57 18 48Z" fill="#F3A9D8" stroke="#D96FC1" stroke-width="2.5"/><path d="M12 9Q48 2 84 9L81 22Q48 29 15 22Z" fill="#F8C7E8"/><path d="M18 31Q28 39 39 35M78 31Q68 39 57 35" stroke="#E27BC9" stroke-width="4" stroke-linecap="round"/></svg></div><div class="diaper-title">Cambio de pañal</div><div class="diaper-clock" id="diaperClock"></div><div class="diaper-today">Hoy</div></div>
   <div class="diaper-field-title">Contenido del pañal</div>
   <div class="diaper-options">
-   <button type="button" class="diaper-option" data-diaper="Seco"><span class="diaper-symbol">×</span><span>Seco</span></button>
-   <button type="button" class="diaper-option" data-diaper="Orina"><span class="diaper-symbol">♧</span><span>Mojado</span></button>
-   <button type="button" class="diaper-option" data-diaper="Deposición"><span class="diaper-symbol">♟</span><span>Sucio</span></button>
-   <button type="button" class="diaper-option" data-diaper="Ambos"><span class="diaper-symbol">♧̸</span><span>Variado</span></button>
+   <button type="button" class="diaper-option" data-diaper="Seco"><span class="diaper-symbol"><svg viewBox="0 0 48 48" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10 10 38 38M38 10 10 38"/></svg></span><span>Seco</span></button>
+   <button type="button" class="diaper-option" data-diaper="Orina"><span class="diaper-symbol"><svg viewBox="0 0 48 48" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 5C18 14 10 22 10 30a14 14 0 0 0 28 0c0-8-8-16-14-25Z"/><path d="M17 32c1 4 4 6 8 6"/></svg></span><span>Mojado</span></button>
+   <button type="button" class="diaper-option" data-diaper="Deposición"><span class="diaper-symbol"><svg viewBox="0 0 48 48" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13 37h22a5 5 0 0 0 0-10h-3a6 6 0 0 0-11-3 6 6 0 1 0-8 8h-1a2.5 2.5 0 0 0 1 5Z"/><path d="M20 18a5 5 0 1 1 9 3"/></svg></span><span>Sucio</span></button>
+   <button type="button" class="diaper-option" data-diaper="Ambos"><span class="diaper-symbol"><svg viewBox="0 0 48 48" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8C13 15 9 21 9 27a10 10 0 0 0 19 4"/><path d="M14 28c2 3 5 4 8 3"/><path d="M26 36h13a4 4 0 0 0 0-8h-2a5 5 0 0 0-9-2"/><path d="M11 40 39 8"/></svg></span><span>Variado</span></button>
   </div>
   <label class="diaper-field-title" for="diaperNotes">Comentario<textarea class="diaper-notes" id="diaperNotes" placeholder="Aún no se agregan comentarios"></textarea></label>
   <button class="diaper-save" id="diaperSave" aria-label="Guardar cambio de pañal">✓</button><p id="diaperMsg" class="muted"></p>
