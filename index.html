@@ -254,6 +254,25 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 #solidsSheet{align-items:flex-end}
 #solidsSheet .solids-panel{height:auto!important;min-height:0!important;max-height:calc(100dvh - 120px)!important;padding-bottom:calc(18px + env(safe-area-inset-bottom))!important;overflow-y:auto}
 @media(max-height:740px){#solidsSheet .solids-panel{height:auto!important;min-height:0!important;max-height:calc(100dvh - 105px)!important;padding-bottom:calc(14px + env(safe-area-inset-bottom))!important}}
+
+/* Cambio de pañal: mismo bottom sheet compacto que Sólidos, ajustado al contenido */
+#diaperSheet{align-items:flex-end;padding:0!important}
+#diaperSheet .diaper-panel{position:relative;width:100%;max-width:680px;height:auto!important;min-height:0!important;max-height:90dvh!important;box-sizing:border-box;overflow-y:auto;margin:0 auto;padding:16px 18px calc(20px + env(safe-area-inset-bottom))!important;border-radius:28px 28px 0 0!important;border-bottom:0}
+#diaperSheet .diaper-handle{position:relative;top:auto;left:auto;transform:none;width:58px;height:7px;margin:0 auto 16px}
+#diaperSheet .diaper-hero{margin:0 0 12px}
+#diaperSheet .diaper-icon svg{width:76px;height:58px}
+#diaperSheet .diaper-title{font-size:24px;line-height:1.25;margin:8px 0 12px}
+#diaperSheet .diaper-clock{font-size:46px;line-height:1.05}
+#diaperSheet .diaper-today{font-size:16px;margin-top:6px}
+#diaperSheet .diaper-field-title{font-size:17px;margin:14px 0 8px}
+#diaperSheet .diaper-options{gap:4px}
+#diaperSheet .diaper-option{gap:6px;padding:5px 1px;font-size:14px}
+#diaperSheet .diaper-option .diaper-symbol{width:60px;height:60px}
+#diaperSheet .diaper-notes{height:84px;min-height:84px;margin-top:8px;padding:13px 16px;font-size:15px;border-radius:16px}
+#diaperSheet .diaper-save{position:relative;left:auto;bottom:auto;transform:none;display:grid;width:68px;height:68px;margin:16px auto 4px;font-size:30px}
+#diaperSheet .diaper-save:active{transform:scale(.96)}
+#diaperSheet #diaperMsg{margin:4px 0 0;text-align:center}
+@media(max-height:740px){#diaperSheet .diaper-panel{max-height:calc(100dvh - 100px)!important;padding-top:12px!important;padding-bottom:calc(14px + env(safe-area-inset-bottom))!important}#diaperSheet .diaper-icon svg{width:64px;height:48px}#diaperSheet .diaper-title{font-size:22px;margin:5px 0 8px}#diaperSheet .diaper-clock{font-size:40px}#diaperSheet .diaper-field-title{margin:10px 0 6px}#diaperSheet .diaper-option .diaper-symbol{width:52px;height:52px}#diaperSheet .diaper-notes{height:68px;min-height:68px}#diaperSheet .diaper-save{width:58px;height:58px;margin-top:10px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
