@@ -73,13 +73,17 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 /* Registro guiado de descanso */
 .sleep-sheet{position:fixed;inset:0;z-index:70;background:#08081799;backdrop-filter:blur(9px);display:none;align-items:flex-end}
 .sleep-sheet.open{display:flex}
-.sleep-panel{width:100%;max-width:680px;max-height:88dvh;overflow:auto;margin:0 auto;background:linear-gradient(145deg,#272451,#181635);border:1px solid #514b91;border-bottom:0;border-radius:28px 28px 0 0;padding:14px 16px calc(22px + env(safe-area-inset-bottom));color:#f1efff}
-.sleep-panel h3{font-size:16px;margin:14px 0 9px;color:#f4f0ff}
-.sleep-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.sleep-choice{min-height:66px;border:1px solid #393565;border-radius:15px;background:#242148;color:#dedaff;padding:9px 6px;font:inherit;font-size:12px;line-height:1.3}
+.sleep-panel{width:100%;max-width:680px;max-height:88dvh;overflow:auto;margin:0 auto;background:linear-gradient(145deg,#272451,#181635);border:1px solid #514b91;border-bottom:0;border-radius:28px 28px 0 0;padding:20px 18px calc(26px + env(safe-area-inset-bottom));color:#f1efff}
+.sleep-panel h2{font-size:22px;line-height:1.25;margin:8px 0 18px;color:#f4f0ff}
+.sleep-panel h3{font-size:20px;line-height:1.3;margin:20px 0 12px;color:#f4f0ff}
+.sleep-panel .head h2{font-size:22px;margin:0}
+.sleep-panel .muted{font-size:16px}
+.sleep-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sleep-choice{min-height:82px;border:1px solid #393565;border-radius:17px;background:#242148;color:#dedaff;padding:12px 8px;font:inherit;font-size:15px;line-height:1.35;font-weight:550}
 .sleep-choice.selected{background:linear-gradient(135deg,#6259b7,#8c7af0);border-color:#b5aaff;box-shadow:0 0 18px #9688ff45;color:#fff}
-.sleep-actions{display:flex;gap:9px;margin-top:16px}
-.sleep-actions button{flex:1}
+.sleep-actions{display:flex;gap:10px;margin-top:20px}
+.sleep-actions button{flex:1;font-size:17px;min-height:58px}
+@media(max-width:390px){.sleep-choice{font-size:14px;min-height:76px}.sleep-panel h3{font-size:19px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
