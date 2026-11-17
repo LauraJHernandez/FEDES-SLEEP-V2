@@ -318,6 +318,24 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 #temperatureSheet .lactation-actions button{flex:1;min-height:52px;font-size:15px}
 #temperatureSheet #temperatureMsg{margin:6px 0 0;text-align:center}
 @media(max-height:740px){#temperatureSheet .temperature-panel{max-height:calc(100dvh - 80px);padding-top:12px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}#temperatureSheet .temperature-icon{font-size:60px;margin:0 0 6px}#temperatureSheet .temperature-hero{margin:12px 0 8px}#temperatureSheet .temperature-clock{font-size:42px}#temperatureSheet .temperature-range{margin-bottom:28px}#temperatureSheet #temperatureNotes{height:100px}}
+
+/* Medicina: formulario compacto con diseño de las demás sesiones */
+#medicineSheet{position:fixed;inset:0;z-index:80;background:#080817aa;backdrop-filter:blur(10px);display:none;align-items:flex-end;padding:0}
+#medicineSheet.open{display:flex}
+#medicineSheet .medicine-panel{width:100%;max-width:680px;max-height:90dvh;overflow:auto;margin:0 auto;padding:16px 18px calc(24px + env(safe-area-inset-bottom));border:1px solid #514b91;border-bottom:0;border-radius:28px 28px 0 0;background:linear-gradient(145deg,#272451,#181635);color:#f1efff;box-shadow:0 -18px 50px #08081788;box-sizing:border-box}
+#medicineSheet .sheet-handle{width:58px;height:7px;border-radius:20px;background:#77738f;margin:0 auto 16px}
+#medicineSheet h2{text-align:center;font-size:24px;margin:6px 0 8px;color:#c9c4ff}
+#medicineSheet .medicine-icon{text-align:center;font-size:58px;line-height:1.2;margin:2px 0 8px;filter:drop-shadow(0 0 18px #8e82ff44)}
+#medicineSheet .medicine-hero{text-align:center;margin:14px 0 20px}
+#medicineSheet .medicine-clock{font-size:clamp(38px,11vw,54px);line-height:1.05;font-weight:600;color:#fff;font-variant-numeric:tabular-nums}
+#medicineSheet .medicine-today{font-size:18px;color:#777492;margin-top:8px}
+#medicineSheet .medicine-field{display:block;margin:0 0 18px;font-size:17px;font-weight:600;color:#f1efff}
+#medicineSheet input,#medicineSheet select{display:block;width:100%;height:58px;box-sizing:border-box;margin-top:9px;padding:0 16px;border:1px solid #514b91;border-radius:16px;background:#1c1a3a;color:#f1efff;font:inherit;font-size:16px;outline:none;color-scheme:dark}
+#medicineSheet input::placeholder{color:#8884b1}
+#medicineSheet .lactation-actions{display:flex;gap:10px;margin-top:18px}
+#medicineSheet .lactation-actions button{flex:1;min-height:52px;font-size:15px}
+#medicineSheet #medicineMsg{margin:6px 0 0;text-align:center}
+@media(max-height:740px){#medicineSheet .medicine-panel{max-height:calc(100dvh - 80px);padding-top:12px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}#medicineSheet .medicine-icon{font-size:48px;margin:0 0 4px}#medicineSheet .medicine-hero{margin:8px 0 14px}#medicineSheet .medicine-clock{font-size:40px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
@@ -426,6 +444,17 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
  </div>
 </div>
 
+
+<div id="medicineSheet" role="dialog" aria-modal="true" aria-label="Registrar medicina">
+ <div class="medicine-panel"><div class="sheet-handle"></div>
+  <div class="medicine-icon" aria-hidden="true">💊</div><h2>Medicina</h2>
+  <div class="medicine-hero"><div class="medicine-clock" id="medicineClock"></div><div class="medicine-today">Hora de la toma</div></div>
+  <label class="medicine-field" for="medicineType">Tipo de medicina<select id="medicineType"><option value="">Selecciona el tipo</option><option>Jarabe</option><option>Pastilla</option><option>Gotas</option><option> gotas orales</option><option>Suspensión</option><option>Crema</option><option>Supositorio</option><option>Inyección</option><option>Otro</option></select></label>
+  <label class="medicine-field" for="medicineName">Nombre<input id="medicineName" type="text" maxlength="100" placeholder="Nombre de la medicina" autocomplete="off"></label>
+  <label class="medicine-field" for="medicineTime">Hora de la toma<input id="medicineTime" type="time"></label>
+  <div class="lactation-actions"><button class="btn light" id="medicineCancel">Cancelar</button><button class="btn" id="medicineSave">Guardar medicina</button></div><p id="medicineMsg" class="muted"></p>
+ </div>
+</div>
 <div id="diaperSheet" role="dialog" aria-modal="true" aria-label="Registrar cambio de pañal">
  <div class="lactation-panel diaper-lactation-panel"><div class="sheet-handle"></div>
   <h2>🩲 Cambio de pañal</h2>
@@ -489,6 +518,7 @@ document.querySelectorAll('[data-activity]').forEach(b=>b.onclick=()=>{
  if(b.dataset.activity==='solids'){openSolidsSheet();return}
  if(b.dataset.activity==='diaper'){openDiaperSheet();return}
  if(b.dataset.activity==='temperature'){openTemperatureSheet();return}
+ if(b.dataset.activity==='medicine'){openMedicineSheet();return}
  $('type').value='note';
  fields();$('recordTitle').textContent='Registrar '+names[b.dataset.activity];
  $('notes').value='Actividad: '+names[b.dataset.activity]+'. ';
@@ -502,6 +532,11 @@ function openTemperatureSheet(){const d=new Date();$('temperatureClock').textCon
 $('temperatureCancel').onclick=()=>$('temperatureSheet').classList.remove('open');
 $('temperatureSave').onclick=async()=>{if(!sb||!familyId||!user)return msg('temperatureMsg','Primero inicia sesión y conecta tu espacio familiar.');const payload={family_id:familyId,created_by:user.id,kind:'symptom',occurred_at:new Date().toISOString(),details:{symptom:'Temperatura',temperature:Number($('temperatureRange').value),notes:$('temperatureNotes').value}};const {error}=await sb.from('entries').insert(payload);if(error)return msg('temperatureMsg',error.message);$('temperatureSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
 $('temperatureSheet').addEventListener('click',e=>{if(e.target===$('temperatureSheet'))$('temperatureSheet').classList.remove('open')});
+
+function openMedicineSheet(){const d=new Date();$('medicineClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\s?[ap]\. ?m\.?/i,'').trim();$('medicineTime').value=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');$('medicineType').value='';$('medicineName').value='';msg('medicineMsg','');$('medicineSheet').classList.add('open')}
+$('medicineCancel').onclick=()=>$('medicineSheet').classList.remove('open');
+$('medicineSave').onclick=async()=>{if(!sb||!familyId||!user)return msg('medicineMsg','Primero inicia sesión y conecta tu espacio familiar.');const type=$('medicineType').value,name=$('medicineName').value.trim(),time=$('medicineTime').value;if(!type||!name||!time)return msg('medicineMsg','Completa el tipo, el nombre y la hora de la toma.');const [hh,mm]=time.split(':').map(Number),occurred=new Date();occurred.setHours(hh,mm,0,0);const payload={family_id:familyId,created_by:user.id,kind:'symptom',occurred_at:occurred.toISOString(),details:{symptom:'Medicina',medicine_type:type,medicine_name:name,time}};const {error}=await sb.from('entries').insert(payload);if(error)return msg('medicineMsg',error.message);$('medicineSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
+$('medicineSheet').addEventListener('click',e=>{if(e.target===$('medicineSheet'))$('medicineSheet').classList.remove('open')});
 let selectedDiaper='';
 function openDiaperSheet(){selectedDiaper='';const d=new Date();$('diaperClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\s?[ap]\.?\s?m\.?/i,'').trim();$('diaperNotes').value='';msg('diaperMsg','');document.querySelectorAll('[data-diaper]').forEach(b=>b.classList.remove('selected'));$('diaperSheet').classList.add('open')}
 document.querySelectorAll('[data-diaper]').forEach(b=>b.onclick=()=>{selectedDiaper=b.dataset.diaper;document.querySelectorAll('[data-diaper]').forEach(x=>x.classList.toggle('selected',x===b))});
