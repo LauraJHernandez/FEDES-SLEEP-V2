@@ -93,7 +93,7 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 .bottle-hero{text-align:center;font-size:62px;filter:drop-shadow(0 0 15px #65e9c477);margin:8px 0}
 .bottle-panel label{font-size:17px;color:#eeeaff;margin:18px 0}
 .bottle-panel input,.bottle-panel select,.bottle-panel textarea{font-size:18px;padding:15px;border-radius:15px}
-.bottle-panel .bottle-amount{font-size:28px;font-weight:750;text-align:center}
+.bottle-quantity{display:flex;align-items:center;justify-content:center;gap:20px;margin:8px 0 22px}.bottle-quantity button{width:58px;height:58px;border-radius:50%;border:1px solid #514b91;background:#292653;color:#f4f0ff;font-size:30px;font-weight:500;box-shadow:0 5px 16px #09081755}.bottle-quantity button:active{transform:scale(.94)}.bottle-quantity input{width:150px;border:0;background:transparent;font-size:38px;font-weight:800;text-align:center;padding:8px 2px;font-variant-numeric:tabular-nums}.bottle-unit{font-size:17px;color:#aaa7d2;font-weight:650;text-align:center;margin-top:-12px;margin-bottom:20px}.bottle-time{font-size:18px!important;text-align:center;color:#dcd7ff!important}
 .bottle-types{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .bottle-type{min-height:58px;border:1px solid #393565;border-radius:16px;background:#242148;color:#dedaff;font:inherit;font-size:15px;padding:10px 6px}
 .bottle-type.selected{background:linear-gradient(135deg,#6259b7,#8c7af0);border-color:#b5aaff;color:#fff;box-shadow:0 0 18px #9688ff45}
@@ -188,12 +188,14 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 <div id="bottleSheet" role="dialog" aria-modal="true" aria-label="Registrar toma de biberón">
  <div class="bottle-panel"><div class="sheet-handle"></div>
   <div class="bottle-hero">🍼</div><h2>Toma de biberón</h2>
-  <label>Fecha y hora<input id="bottleTime" type="datetime-local" required></label>
-  <label>Cantidad de leche (ml) <span class="muted">Obligatorio</span><input id="bottleAmount" class="bottle-amount" type="number" min="1" max="1000" step="1" inputmode="numeric" placeholder="Ej. 90" required></label>
+  <label>Hora de la toma<input id="bottleTime" class="bottle-time" type="datetime-local" readonly aria-readonly="true"></label>
+  <label>Cantidad de leche <span class="muted">Obligatorio</span></label>
+  <div class="bottle-quantity"><button type="button" id="bottleMinus" aria-label="Restar 5 ml">−</button><input id="bottleAmount" type="number" min="1" max="1000" step="1" inputmode="numeric" placeholder="90" required><button type="button" id="bottlePlus" aria-label="Sumar 5 ml">+</button></div><div class="bottle-unit">mililitros (ml)</div>
   <label>Tipo de leche <span class="muted">Obligatorio</span></label>
-  <div class="bottle-types">
+  <div class="bottle-types" style="grid-template-columns:repeat(2,minmax(0,1fr))">
    <button type="button" class="bottle-type" data-milk="Fórmula">Fórmula</button>
    <button type="button" class="bottle-type" data-milk="Leche materna">Leche materna</button>
+   <button type="button" class="bottle-type" data-milk="Mixta">Mixta</button>
    <button type="button" class="bottle-type" data-milk="Otro">Otro</button>
   </div>
   <label>Comentario<textarea id="bottleNotes" placeholder="Añade algún detalle (opcional)"></textarea></label>
@@ -225,11 +227,13 @@ document.querySelectorAll('[data-activity]').forEach(b=>b.onclick=()=>{
 });
 
 let bottleMilkType='';
-function openBottleSheet(){bottleMilkType='';$('bottleTime').value=localNow();$('bottleAmount').value='';$('bottleNotes').value='';msg('bottleMsg','');document.querySelectorAll('[data-milk]').forEach(x=>x.classList.remove('selected'));$('bottleSheet').classList.add('open')}
+function openBottleSheet(){bottleMilkType='';$('bottleTime').value=localNow();$('bottleAmount').value='90';$('bottleNotes').value='';msg('bottleMsg','');document.querySelectorAll('[data-milk]').forEach(x=>x.classList.remove('selected'));$('bottleSheet').classList.add('open')}
 document.querySelectorAll('[data-milk]').forEach(b=>b.onclick=()=>{bottleMilkType=b.dataset.milk;document.querySelectorAll('[data-milk]').forEach(x=>x.classList.toggle('selected',x===b))});
+function adjustBottleAmount(delta){const field=$('bottleAmount');const current=Number(field.value)||0;field.value=String(Math.min(1000,Math.max(1,current+delta)));}
+$('bottleMinus').onclick=()=>adjustBottleAmount(-5);$('bottlePlus').onclick=()=>adjustBottleAmount(5);
 $('bottleCancel').onclick=()=>$('bottleSheet').classList.remove('open');
 $('bottleSheet').addEventListener('click',e=>{if(e.target===$('bottleSheet'))$('bottleSheet').classList.remove('open')});
-$('bottleSave').onclick=async()=>{const amount=Number($('bottleAmount').value);if(!Number.isInteger(amount)||amount<1||amount>1000){msg('bottleMsg','Ingresa una cantidad válida en ml.');$('bottleAmount').focus();return}if(!bottleMilkType){msg('bottleMsg','Selecciona el tipo de leche para continuar.');return}if(!sb||!familyId||!user){msg('bottleMsg','Primero inicia sesión y conecta tu espacio familiar.');return}const payload={family_id:familyId,created_by:user.id,kind:'feed',occurred_at:new Date($('bottleTime').value).toISOString(),details:{subtype:'bottle',amount_ml:amount,milk_type:bottleMilkType,notes:$('bottleNotes').value.trim()}};const {error}=await sb.from('entries').insert(payload);if(error){msg('bottleMsg','No se pudo guardar: '+error.message);return}$('bottleSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
+$('bottleSave').onclick=async()=>{const amount=Number($('bottleAmount').value);if(!Number.isInteger(amount)||amount<1||amount>1000){msg('bottleMsg','Ingresa una cantidad válida en ml.');$('bottleAmount').focus();return}if(!bottleMilkType){msg('bottleMsg','Selecciona el tipo de leche para continuar.');return}if(!sb||!familyId||!user){msg('bottleMsg','Primero inicia sesión y conecta tu espacio familiar.');return}const payload={family_id:familyId,created_by:user.id,kind:'feed',occurred_at:new Date($('bottleTime').value).toISOString(),details:{subtype:'bottle',amount_ml:amount,milk_type:bottleMilkType,notes:$('bottleNotes').value.trim(),recorded_at:new Date().toISOString()}};const {error}=await sb.from('entries').insert(payload);if(error){msg('bottleMsg','No se pudo guardar: '+error.message);return}$('bottleSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
 
 function localNow(){let d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
 $('occurred').value=localNow();
