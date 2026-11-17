@@ -128,6 +128,27 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 @media(max-width:390px){.bottle-panel{padding-left:14px;padding-right:14px}.bottle-panel label{font-size:16px}.bottle-type{font-size:15px;min-height:54px}.bottle-quantity{gap:12px}.bottle-quantity button{flex-basis:52px;width:52px;height:52px}}
 @media(max-height:740px){.bottle-panel{max-height:86dvh;padding-top:12px}.bottle-panel h2{margin-bottom:12px}.bottle-panel label{margin:10px 0}.bottle-panel textarea{min-height:58px}}
 
+/* Biberón compacto: conserva el estilo, ocupa menos alto en móvil */
+#bottleSheet{align-items:flex-end}
+.bottle-panel{max-height:78dvh;padding:10px 16px calc(14px + env(safe-area-inset-bottom));border-radius:24px 24px 0 0}
+.bottle-panel .sheet-handle{margin:0 auto 9px}
+.bottle-panel h2{font-size:21px;margin:2px 0 10px}
+.bottle-hero{font-size:38px;margin:0}
+.bottle-panel label{font-size:15px;gap:4px;margin:9px 0}
+.bottle-panel .muted{font-size:12px}
+.bottle-panel input,.bottle-panel textarea{font-size:15px;padding:10px 12px;border-radius:13px}
+.bottle-time{font-size:15px!important;padding:10px!important}
+.bottle-quantity{gap:14px;margin:5px 0 3px}
+.bottle-quantity button{flex-basis:46px;width:46px;height:46px;font-size:24px}
+.bottle-quantity input{width:112px;font-size:27px;padding:5px 3px}
+.bottle-unit{font-size:13px;margin:0 0 10px}
+.bottle-types{gap:8px}
+.bottle-type{min-height:46px;font-size:14px;padding:8px 6px;border-radius:14px}
+.bottle-panel textarea{min-height:54px}
+.bottle-footer{gap:8px;margin-top:12px}
+.bottle-footer button{min-height:46px;font-size:14px}
+@media(max-height:740px){.bottle-panel{max-height:74dvh;padding-top:8px}.bottle-panel h2{margin-bottom:7px}.bottle-panel label{margin:7px 0}.bottle-panel textarea{min-height:46px}}
+
 /* Lactancia: cronómetros independientes L/R */
 #lactationSheet{position:fixed;inset:0;z-index:80;background:#080817aa;backdrop-filter:blur(10px);display:none;align-items:flex-end}
 #lactationSheet.open{display:flex}
