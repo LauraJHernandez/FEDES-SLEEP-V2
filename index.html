@@ -380,7 +380,7 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 #home .hero #sleepBtn{font-size:15px;padding:13px 19px}
 
 /* Estadísticas: reemplaza la pestaña Historial sin borrar registros */
-.stats-sections{display:grid;gap:9px;margin-top:14px}.stats-row{width:100%;display:grid;grid-template-columns:54px 1fr 18px;align-items:center;gap:12px;text-align:left;padding:11px;border:1px solid #393565;border-radius:18px;background:linear-gradient(145deg,#292653,#211f43);color:#eeeaff;font:inherit}.stats-row.active{border-color:#8e82ff;background:linear-gradient(135deg,#38316f,#292653);box-shadow:0 0 16px #8174ff22}.stats-icon{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#393365;font-size:25px}.stats-row b{display:block;font-size:14px;color:#f3f0ff}.stats-row small{display:block;margin-top:3px;font-size:11px;line-height:1.35;color:#aaa7d2}.stats-row i{font-style:normal;font-size:26px;color:#c9c4ff}.stats-detail{margin-top:16px;padding:14px;border:1px solid #393565;border-radius:18px;background:#211f43}.stats-detail h3{margin:0 0 12px;font-size:17px;color:#f3f0ff}.stats-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stats-kpi{padding:12px;border:1px solid #393565;border-radius:14px;background:#292653}.stats-kpi strong{display:block;font-size:20px;color:#fff}.stats-kpi span{font-size:11px;color:#aaa7d2}.stats-bar{height:12px;border-radius:20px;background:#393565;overflow:hidden;display:flex;margin:8px 0}.stats-bar span:first-child{background:#8e82ff}.stats-bar span:last-child{background:#d6cfff}.stats-legend{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#c9c4ff;margin:6px 0}.stats-empty{font-size:13px;color:#aaa7d2;line-height:1.5}.stats-detail .muted{line-height:1.5}@media(max-width:380px){.stats-row{grid-template-columns:46px 1fr 14px;gap:9px;padding:9px}.stats-icon{width:44px;height:44px;font-size:22px}.stats-row b{font-size:13px}.stats-row small{font-size:10px}}
+.stats-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;margin:12px 0}.stats-filters label{display:grid;gap:6px;font-size:12px;color:#c9c4e8}.stats-filters select,.stats-filters input{width:100%;min-width:0;padding:11px 10px;border:1px solid #514b83;border-radius:12px;background:#211f43;color:#f3f0ff;font:inherit;font-size:14px;color-scheme:dark}.stats-filters #statsClearDate{grid-column:1/-1;padding:9px}.stats-sections{display:grid;gap:9px;margin-top:14px}.stats-row{width:100%;display:grid;grid-template-columns:54px 1fr 18px;align-items:center;gap:12px;text-align:left;padding:11px;border:1px solid #393565;border-radius:18px;background:linear-gradient(145deg,#292653,#211f43);color:#eeeaff;font:inherit}.stats-row.active{border-color:#8e82ff;background:linear-gradient(135deg,#38316f,#292653);box-shadow:0 0 16px #8174ff22}.stats-icon{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#393365;font-size:25px}.stats-row b{display:block;font-size:14px;color:#f3f0ff}.stats-row small{display:block;margin-top:3px;font-size:11px;line-height:1.35;color:#aaa7d2}.stats-row i{font-style:normal;font-size:26px;color:#c9c4ff}.stats-detail{margin-top:16px;padding:14px;border:1px solid #393565;border-radius:18px;background:#211f43}.stats-detail h3{margin:0 0 12px;font-size:17px;color:#f3f0ff}.stats-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stats-kpi{padding:12px;border:1px solid #393565;border-radius:14px;background:#292653}.stats-kpi strong{display:block;font-size:20px;color:#fff}.stats-kpi span{font-size:11px;color:#aaa7d2}.stats-bar{height:12px;border-radius:20px;background:#393565;overflow:hidden;display:flex;margin:8px 0}.stats-bar span:first-child{background:#8e82ff}.stats-bar span:last-child{background:#d6cfff}.stats-legend{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#c9c4ff;margin:6px 0}.stats-empty{font-size:13px;color:#aaa7d2;line-height:1.5}.stats-detail .muted{line-height:1.5}@media(max-width:380px){.stats-row{grid-template-columns:46px 1fr 14px;gap:9px;padding:9px}.stats-icon{width:44px;height:44px;font-size:22px}.stats-row b{font-size:13px}.stats-row small{font-size:10px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
@@ -416,7 +416,7 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 <label>Observaciones<textarea id="notes"></textarea></label><button class="btn">Guardar en la nube</button></form><p id="recordMsg" class="muted"></p></div></section>
 <section id="history" class="view">
  <div class="card">
-  <div class="head"><h2>▥ Estadísticas</h2><select id="statsRange" aria-label="Periodo de estadísticas" style="width:auto;min-width:112px"><option value="1">Hoy</option><option value="7">7 días</option><option value="30">30 días</option></select></div>
+  <div class="head"><h2>▥ Estadísticas</h2></div><div class="stats-filters"><label>Periodo<select id="statsRange" aria-label="Periodo de estadísticas"><option value="1">Hoy</option><option value="7">7 días</option><option value="30">30 días</option></select></label><label>Consultar una fecha<input id="statsDate" type="date" aria-label="Elegir una fecha específica"></label><button class="btn light hidden" id="statsClearDate" type="button">Quitar fecha</button></div>
   <p class="muted" id="statsPeriod">Resumen de actividad de Federico</p>
   <div id="statsSections" class="stats-sections">
    <button class="stats-row active" data-stat="sleep"><span class="stats-icon">🌙</span><span><b>Resumen del sueño</b><small>Total de horas y distribución (nocturno y diurno)</small></span><i>›</i></button>
@@ -573,8 +573,12 @@ function statTime(t){return new Date(t).toLocaleTimeString('es-CO',{hour:'numeri
 function inNight(e){const h=new Date(e.occurred_at).getHours();return h>=19||h<7}
 function statCard(value,label){return '<div class="stats-kpi"><strong>'+value+'</strong><span>'+label+'</span></div>'}
 function renderStats(){
- const days=Number($('statsRange').value||1),now=new Date(),start=new Date(now);start.setHours(0,0,0,0);start.setDate(start.getDate()-(days-1));
- const rows=statsEntries.filter(e=>new Date(e.occurred_at)>=start&&new Date(e.occurred_at)<=now);
+ const days=Number($('statsRange').value||1),now=new Date(),picked=$('statsDate').value;
+ let start=new Date(now),end=new Date(now);
+ start.setHours(0,0,0,0);end.setHours(23,59,59,999);
+ if(picked){const [y,m,d]=picked.split('-').map(Number);start=new Date(y,m-1,d,0,0,0,0);end=new Date(y,m-1,d,23,59,59,999)}
+ else start.setDate(start.getDate()-(days-1));
+ const rows=statsEntries.filter(e=>new Date(e.occurred_at)>=start&&new Date(e.occurred_at)<=end);
  const sleeps=rows.filter(e=>e.kind==='sleep'&&e.ended_at),sleepMins=sleeps.reduce((s,e)=>s+statDuration(e),0);
  const night=sleeps.filter(inNight).reduce((s,e)=>s+statDuration(e),0),day=Math.max(0,sleepMins-night);
  const naps=sleeps.filter(e=>{const h=new Date(e.occurred_at).getHours();return h>=7&&h<19}),napMins=naps.reduce((s,e)=>s+statDuration(e),0);
@@ -609,7 +613,7 @@ function renderStats(){
  }
  $('statsDetail').innerHTML=html;
  document.querySelectorAll('[data-stat]').forEach(b=>b.classList.toggle('active',b.dataset.stat===activeStat));
- $('statsPeriod').textContent=days===1?'Datos de hoy': 'Datos de los últimos '+days+' días';
+ $('statsPeriod').textContent=picked?'Datos del '+start.toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'}):(days===1?'Datos de hoy':'Datos de los últimos '+days+' días');$('statsClearDate').classList.toggle('hidden',!picked);
 }
 async function loadStatistics(){
  if(!sb||!familyId){$('statsDetail').innerHTML='<p class="stats-empty">Inicia sesión y conecta tu espacio familiar para consultar las estadísticas.</p>';return}
@@ -619,7 +623,7 @@ async function loadStatistics(){
  statsEntries=data||[];renderStats();
 }
 document.querySelectorAll('[data-stat]').forEach(b=>b.onclick=()=>{activeStat=b.dataset.stat;renderStats()});
-$('statsRange').onchange=renderStats;$('statsRefresh').onclick=loadStatistics;
+$('statsRange').onchange=()=>{if($('statsDate').value)$('statsDate').value='';renderStats()};$('statsDate').onchange=renderStats;$('statsClearDate').onclick=()=>{$('statsDate').value='';renderStats()};$('statsRefresh').onclick=loadStatistics;
 
 const activitySheet=$('activitySheet');
 $('openActivities').onclick=()=>activitySheet.classList.add('open');
