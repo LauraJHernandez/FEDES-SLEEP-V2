@@ -54,7 +54,7 @@ nav button{color:#8f8bb7}
 #entries .item{color:#aaa7cc}
 #entries .item-top{color:#f1efff}
 #setup .card,#record .card,#history .card,#ai .card,#family .card{border-radius:24px}
-@media(max-width:430px){.hero{width:min(100%,350px);min-height:0}.hero .big{font-size:39px}}
+@media(max-width:430px){.hero{width:min(100%,370px);min-height:0}.hero .big{font-size:clamp(46px,12vw,54px);margin:14px 0 20px}}
 
 
 /* Menú de actividades inspirado en la referencia de Napper */
@@ -401,7 +401,7 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 </section>
 <section id="home" class="view">
  <div class="card hero"><div>🌙</div><div id="sleepState">Registro de sueño</div><div class="big" id="timer">00:00:00</div><button class="btn" id="sleepBtn">＋ Iniciar descanso</button></div>
- <div class="head"><h3>🌷 Hoy con Federico</h3><span class="muted" id="today"></span></div>
+ <div class="head"><h3>Hoy con Federico</h3><span class="muted" id="today"></span></div>
  <div class="grid"><div class="metric"><strong id="sleepHours">0</strong><span>Horas de sueño</span></div><div class="metric"><strong id="feeds">0</strong><span>Tomas</span></div><div class="metric"><strong id="diapers">0</strong><span>Pañales</span></div><div class="metric"><strong id="symptoms">0</strong><span>Síntomas</span></div></div>
  <div class="notice">Las estimaciones son orientativas. Ofrece lactancia a demanda. La IA no diagnostica ni sustituye al pediatra.</div>
 </section>
