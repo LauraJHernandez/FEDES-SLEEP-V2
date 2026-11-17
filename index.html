@@ -84,6 +84,21 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 .sleep-actions{display:flex;gap:10px;margin-top:20px}
 .sleep-actions button{flex:1;font-size:17px;min-height:58px}
 @media(max-width:390px){.sleep-choice{font-size:14px;min-height:76px}.sleep-panel h3{font-size:19px}}
+
+/* Registro de toma de biberón */
+#bottleSheet{position:fixed;inset:0;z-index:80;background:#08081799;backdrop-filter:blur(9px);display:none;align-items:flex-end}
+#bottleSheet.open{display:flex}
+.bottle-panel{width:100%;max-width:680px;max-height:90dvh;overflow:auto;margin:0 auto;background:linear-gradient(145deg,#272451,#181635);border:1px solid #514b91;border-bottom:0;border-radius:28px 28px 0 0;padding:20px 18px calc(28px + env(safe-area-inset-bottom));color:#f1efff}
+.bottle-panel h2{text-align:center;font-size:24px;margin:8px 0 22px}
+.bottle-hero{text-align:center;font-size:62px;filter:drop-shadow(0 0 15px #65e9c477);margin:8px 0}
+.bottle-panel label{font-size:17px;color:#eeeaff;margin:18px 0}
+.bottle-panel input,.bottle-panel select,.bottle-panel textarea{font-size:18px;padding:15px;border-radius:15px}
+.bottle-panel .bottle-amount{font-size:28px;font-weight:750;text-align:center}
+.bottle-types{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.bottle-type{min-height:58px;border:1px solid #393565;border-radius:16px;background:#242148;color:#dedaff;font:inherit;font-size:15px;padding:10px 6px}
+.bottle-type.selected{background:linear-gradient(135deg,#6259b7,#8c7af0);border-color:#b5aaff;color:#fff;box-shadow:0 0 18px #9688ff45}
+.bottle-footer{display:flex;gap:10px;margin-top:22px}
+.bottle-footer button{flex:1;min-height:58px;font-size:17px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
@@ -169,6 +184,24 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
  </div>
 </div>
 
+
+<div id="bottleSheet" role="dialog" aria-modal="true" aria-label="Registrar toma de biberón">
+ <div class="bottle-panel"><div class="sheet-handle"></div>
+  <div class="bottle-hero">🍼</div><h2>Toma de biberón</h2>
+  <label>Fecha y hora<input id="bottleTime" type="datetime-local" required></label>
+  <label>Cantidad de leche (ml) <span class="muted">Obligatorio</span><input id="bottleAmount" class="bottle-amount" type="number" min="1" max="1000" step="1" inputmode="numeric" placeholder="Ej. 90" required></label>
+  <label>Tipo de leche <span class="muted">Obligatorio</span></label>
+  <div class="bottle-types">
+   <button type="button" class="bottle-type" data-milk="Fórmula">Fórmula</button>
+   <button type="button" class="bottle-type" data-milk="Leche materna">Leche materna</button>
+   <button type="button" class="bottle-type" data-milk="Otro">Otro</button>
+  </div>
+  <label>Comentario<textarea id="bottleNotes" placeholder="Añade algún detalle (opcional)"></textarea></label>
+  <div class="bottle-footer"><button class="btn light" id="bottleCancel">Cancelar</button><button class="btn" id="bottleSave">Guardar toma</button></div>
+  <p class="muted" id="bottleMsg"></p>
+ </div>
+</div>
+
 <nav><button class="tab active" data-tab="home"><b>⌂</b>Inicio</button><button class="tab" data-tab="history"><b>▤</b>Historial</button><button class="plus-tab" id="openActivities" aria-label="Añadir registro">＋</button><button class="tab" data-tab="ai"><b>✧</b>Fede AI</button><button class="tab" data-tab="family"><b>♧</b>Familia</button></nav>
 <script>
 const $=id=>document.getElementById(id);let sb=null,user=null,familyId=null,activeSleep=null,timer=null;
@@ -182,6 +215,7 @@ document.querySelectorAll('[data-activity]').forEach(b=>b.onclick=()=>{
  const names={nap:'Siesta',bottle:'Toma de biberón',breastfeed:'Lactancia',pump:'Extracción de leche',solids:'Sólidos',diaper:'Cambio de pañal',temperature:'Temperatura',medicine:'Medicina'};
  activitySheet.classList.remove('open');
  if(b.dataset.activity==='wake'){openWakeClock();return}
+ if(b.dataset.activity==='bottle'){openBottleSheet();return}
  if(b.dataset.activity==='breastfeed')$('type').value='feed';
  else if(b.dataset.activity==='diaper')$('type').value='diaper';
  else $('type').value='note';
@@ -189,6 +223,14 @@ document.querySelectorAll('[data-activity]').forEach(b=>b.onclick=()=>{
  $('notes').value='Actividad: '+names[b.dataset.activity]+'. ';
  $('occurred').value=localNow();show('record');
 });
+
+let bottleMilkType='';
+function openBottleSheet(){bottleMilkType='';$('bottleTime').value=localNow();$('bottleAmount').value='';$('bottleNotes').value='';msg('bottleMsg','');document.querySelectorAll('[data-milk]').forEach(x=>x.classList.remove('selected'));$('bottleSheet').classList.add('open')}
+document.querySelectorAll('[data-milk]').forEach(b=>b.onclick=()=>{bottleMilkType=b.dataset.milk;document.querySelectorAll('[data-milk]').forEach(x=>x.classList.toggle('selected',x===b))});
+$('bottleCancel').onclick=()=>$('bottleSheet').classList.remove('open');
+$('bottleSheet').addEventListener('click',e=>{if(e.target===$('bottleSheet'))$('bottleSheet').classList.remove('open')});
+$('bottleSave').onclick=async()=>{const amount=Number($('bottleAmount').value);if(!Number.isInteger(amount)||amount<1||amount>1000){msg('bottleMsg','Ingresa una cantidad válida en ml.');$('bottleAmount').focus();return}if(!bottleMilkType){msg('bottleMsg','Selecciona el tipo de leche para continuar.');return}if(!sb||!familyId||!user){msg('bottleMsg','Primero inicia sesión y conecta tu espacio familiar.');return}const payload={family_id:familyId,created_by:user.id,kind:'feed',occurred_at:new Date($('bottleTime').value).toISOString(),details:{subtype:'bottle',amount_ml:amount,milk_type:bottleMilkType,notes:$('bottleNotes').value.trim()}};const {error}=await sb.from('entries').insert(payload);if(error){msg('bottleMsg','No se pudo guardar: '+error.message);return}$('bottleSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
+
 function localNow(){let d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
 $('occurred').value=localNow();
 function msg(id,t){$(id).textContent=t}
