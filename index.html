@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f8eaf0"><meta name="description" content="Fede's Sleep 2.0: diario familiar e inteligente de Federico.">
-<title>Fede's Sleep 2.0</title>
+<meta name="theme-color" content="#f8eaf0"><meta name="description" content="Fede’s Sleep: diario familiar de Federico.">
+<title>Fede’s Sleep</title>
 <style>
 :root{--ink:#514653;--muted:#887c89;--pink:#f4dce7;--rose:#d98eaa;--lav:#e8e3f6;--mint:#deeee6;--line:#eee5e9;--white:#fff}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#fff8f7,#f8f7fc 65%,#f5faf8);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);padding-bottom:82px}
@@ -18,6 +18,8 @@ nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-ar
 html{background:#111027}
 body{background:radial-gradient(ellipse at 50% 0%,#29245a 0%,#171632 48%,#101020 100%);color:#f1efff;padding-bottom:88px}
 header{background:rgba(25,23,54,.96);border-bottom:1px solid #383366;border-radius:0 0 28px 28px}
+.app-header{display:flex;justify-content:center;align-items:center;min-height:76px;padding:calc(14px + env(safe-area-inset-top)) 18px 14px;text-align:center}
+.app-header h1{font-size:clamp(25px,6vw,31px);font-weight:800;letter-spacing:-.7px;line-height:1.15;color:#f5f2ff;text-shadow:0 2px 18px #a99aff35}
 .logo{background:#302b62;color:#fff;box-shadow:0 0 24px #8878ff35}
 h1{color:#f5f2ff}.sub{color:#aaa5d4}
 main{padding:16px}
@@ -379,7 +381,7 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
-<header><div class="brand"><div class="logo">🐻</div><div><h1>Fede's Sleep 2.0</h1><div class="sub">Pequeños momentos, grandes recuerdos · En familia</div></div></div></header>
+<header class="app-header"><h1>Fede’s Sleep</h1></header>
 <main>
 <section id="setup" class="view active">
  <div class="card"><div class="head"><h2>💗 Conectar la familia</h2><span class="pill">Configuración inicial</span></div>
