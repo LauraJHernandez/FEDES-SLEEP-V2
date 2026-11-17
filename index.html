@@ -251,8 +251,8 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 <div id="lactationSheet" role="dialog" aria-modal="true" aria-label="Registrar lactancia">
  <div class="lactation-panel"><div class="sheet-handle"></div><h2>🤱 Lactancia</h2><p class="lactation-help">Inicia el reloj del lado que estés ofreciendo. Puedes pausar y cambiar de lado.</p>
   <div class="lactation-clocks">
-   <div class="lactation-clock"><div class="lactation-ring"><div class="lactation-letter">L</div><div class="lactation-time" id="leftTime">00:00:00</div></div><button class="btn" id="leftToggle">Iniciar</button></div>
-   <div class="lactation-clock"><div class="lactation-ring"><div class="lactation-letter">R</div><div class="lactation-time" id="rightTime">00:00:00</div></div><button class="btn" id="rightToggle">Iniciar</button></div>
+   <div class="lactation-clock"><div class="lactation-ring"><div class="lactation-letter">L</div><div class="lactation-time" id="leftTime">00:00:00</div></div><div class="lactation-clock-controls"><button class="btn" id="leftStart">Iniciar</button><button class="btn light hidden" id="leftPause">Pausar</button><button class="btn light hidden" id="leftResume">Reanudar</button></div></div>
+   <div class="lactation-clock"><div class="lactation-ring"><div class="lactation-letter">R</div><div class="lactation-time" id="rightTime">00:00:00</div></div><div class="lactation-clock-controls"><button class="btn" id="rightStart">Iniciar</button><button class="btn light hidden" id="rightPause">Pausar</button><button class="btn light hidden" id="rightResume">Reanudar</button></div></div>
   </div><p class="lactation-total" id="lactationTotal">Tiempo total: 00:00:00</p>
   <label>Comentario (opcional)<textarea id="lactationNotes" placeholder="Añade algún detalle"></textarea></label>
   <div class="lactation-actions"><button class="btn light" id="lactationCancel">Cancelar</button><button class="btn" id="lactationSave">Guardar lactancia</button></div><p class="muted" id="lactationMsg"></p>
