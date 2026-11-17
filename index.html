@@ -336,6 +336,32 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 #medicineSheet .lactation-actions button{flex:1;min-height:52px;font-size:15px}
 #medicineSheet #medicineMsg{margin:6px 0 0;text-align:center}
 @media(max-height:740px){#medicineSheet .medicine-panel{max-height:calc(100dvh - 80px);padding-top:12px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}#medicineSheet .medicine-icon{font-size:48px;margin:0 0 4px}#medicineSheet .medicine-hero{margin:8px 0 14px}#medicineSheet .medicine-clock{font-size:40px}}
+
+/* Ajuste de escala: temperatura y medicina al tamaño de Lactancia */
+#temperatureSheet .temperature-icon{font-size:42px;line-height:1.1;margin:0 0 6px;filter:drop-shadow(0 0 10px #8e82ff33)}
+#temperatureSheet h2,#medicineSheet h2{font-size:24px;margin:4px 0 6px}
+#temperatureSheet .temperature-hero{margin:12px 0 10px}
+#temperatureSheet .temperature-clock{font-size:clamp(34px,8vw,42px);line-height:1.05}
+#temperatureSheet .temperature-today{font-size:15px;margin-top:6px}
+#temperatureSheet .temperature-reading{font-size:16px;margin:8px 0 12px}
+#temperatureSheet .temperature-reading output{font-size:16px}
+#temperatureSheet .temperature-range{margin-bottom:24px}
+#temperatureSheet .temperature-range::-webkit-slider-thumb{width:28px;height:28px}
+#temperatureSheet .temperature-range::-moz-range-thumb{width:28px;height:28px}
+#temperatureSheet .temperature-comment-label{font-size:16px;margin-bottom:8px}
+#temperatureSheet #temperatureNotes{min-height:92px;height:92px;padding:14px 16px;font-size:15px;border-radius:16px}
+#temperatureSheet .lactation-actions{gap:10px;margin-top:14px}
+#medicineSheet .medicine-panel{padding:16px 18px calc(20px + env(safe-area-inset-bottom))}
+#medicineSheet .sheet-handle{margin-bottom:12px}
+#medicineSheet .medicine-icon{font-size:40px;line-height:1.1;margin:0 0 5px;filter:drop-shadow(0 0 10px #8e82ff33)}
+#medicineSheet .medicine-hero{margin:10px 0 14px}
+#medicineSheet .medicine-clock{font-size:clamp(32px,8vw,40px);line-height:1.05}
+#medicineSheet .medicine-today{font-size:15px;margin-top:6px}
+#medicineSheet .medicine-field{font-size:16px;margin-bottom:14px}
+#medicineSheet input,#medicineSheet select{height:50px;margin-top:7px;padding:0 14px;border-radius:14px;font-size:15px}
+#medicineSheet .lactation-actions{gap:10px;margin-top:12px}
+#temperatureSheet .temperature-panel{padding:16px 18px calc(20px + env(safe-area-inset-bottom))}
+@media(max-height:740px){#temperatureSheet .temperature-icon{font-size:36px;margin:0 0 4px}#temperatureSheet .temperature-hero{margin:8px 0}#medicineSheet .medicine-icon{font-size:34px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
