@@ -378,8 +378,7 @@ document.querySelectorAll('[data-activity]').forEach(b=>b.onclick=()=>{
  if(b.dataset.activity==='breastfeed'){openLactationSheet();return}
  if(b.dataset.activity==='solids'){openSolidsSheet();return}
  if(b.dataset.activity==='diaper'){openDiaperSheet();return}
- else $('type').value='note';
- else $('type').value='note';
+ $('type').value='note';
  fields();$('recordTitle').textContent='Registrar '+names[b.dataset.activity];
  $('notes').value='Actividad: '+names[b.dataset.activity]+'. ';
  $('occurred').value=localNow();show('record');
