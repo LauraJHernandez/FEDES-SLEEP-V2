@@ -229,6 +229,26 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 .diaper-save{position:relative;left:auto;bottom:auto;transform:none;margin:28px auto 8px;width:92px;height:92px}
 .diaper-save:active{transform:scale(.96)}
 @media(max-height:760px){.diaper-panel{padding-bottom:24px}.diaper-save{width:72px;height:72px;margin:22px auto 6px}}
+
+/* Sólidos: mismo bottom sheet compacto de Lactancia y selector de ml tipo biberón */
+#solidsSheet{position:fixed;inset:0;z-index:95;display:none;align-items:flex-end;justify-content:center;background:#080817aa;backdrop-filter:blur(10px);padding:0}
+#solidsSheet.open{display:flex}
+.solids-panel{width:100%;max-width:680px;max-height:90dvh;overflow:auto;margin:0 auto;padding:16px 18px calc(24px + env(safe-area-inset-bottom));border:1px solid #514b91;border-bottom:0;border-radius:28px 28px 0 0;background:linear-gradient(145deg,#272451,#181635);color:#f1efff;box-shadow:0 -18px 50px #08081788}
+.solids-panel .sheet-handle{margin:0 auto 16px}
+.solids-panel h2{text-align:center;color:#f4f0ff;font-size:24px;line-height:1.25;margin:5px 0 16px}
+.solids-hero{text-align:center;margin:0 0 14px}
+.solids-clock{font-size:48px;line-height:1.05;font-weight:700;letter-spacing:-1px;color:#fff;font-variant-numeric:tabular-nums}
+.solids-today{font-size:16px;color:#aaa7d2;margin-top:7px}
+.solids-field{display:block;margin:15px 0 8px;font-size:17px;font-weight:700;color:#c6c1e7}
+.solids-quantity{display:flex;align-items:center;justify-content:center;gap:18px;margin:8px 0 6px}
+.solids-quantity button{flex:0 0 58px;width:58px;height:58px;border-radius:50%;border:1px solid #514b91;background:linear-gradient(145deg,#302c63,#211f43);color:#f1efff;font-size:30px;font-weight:600;box-shadow:0 0 18px #8174ff20}
+.solids-quantity input{width:140px;max-width:42%;text-align:center;font-size:32px;font-weight:800;padding:9px 4px;border-radius:16px;border:1px solid #403b70;background:#1c1a3a;color:#f2efff;font-variant-numeric:tabular-nums}
+.solids-unit{text-align:center;color:#aaa7d2;font-size:15px;margin:0 0 14px}
+.solids-panel textarea{display:block;width:100%;min-height:76px;box-sizing:border-box;resize:vertical;border:1px solid #403b70;border-radius:16px;background:#1c1a3a;color:#f2efff;font:inherit;font-size:16px;padding:13px 15px}
+.solids-panel textarea::placeholder{color:#8884b1}
+.solids-actions{display:flex;gap:10px;margin-top:16px}
+.solids-actions button{flex:1;min-height:50px;font-size:15px}
+@media(max-height:740px){.solids-panel{max-height:84dvh;padding-top:10px}.solids-panel h2{margin:2px 0 10px}.solids-clock{font-size:40px}.solids-hero{margin-bottom:8px}.solids-field{margin:10px 0 6px}.solids-quantity{margin:4px 0}.solids-quantity button{width:50px;height:50px;flex-basis:50px}.solids-quantity input{font-size:28px}.solids-unit{margin-bottom:8px}.solids-panel textarea{min-height:58px}.solids-actions{margin-top:10px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
@@ -342,11 +362,12 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 </div>
 
 <div id="solidsSheet" role="dialog" aria-modal="true" aria-label="Registrar sólidos">
- <div class="solids-panel"><div class="solids-handle"></div>
-  <div class="solids-hero"><div class="solids-bowl">🥣</div><div class="solids-title">Sólidos</div><div class="solids-clock" id="solidsClock">3:27</div><div class="solids-today">Hoy</div></div>
-  <label class="solids-field">Cantidad tomada (ml)<input class="solids-input" id="solidsAmount" type="number" min="0" max="2000" step="1" inputmode="numeric" placeholder="Agregar cantidad"></label>
-  <label class="solids-field">Comentario<textarea class="solids-textarea" id="solidsNotes" placeholder="Aún no se agregan comentarios"></textarea></label>
-  <button class="solids-save" id="solidsSave" aria-label="Guardar sólidos">✓</button><p id="solidsMsg" class="muted"></p>
+ <div class="solids-panel"><div class="sheet-handle"></div><h2>🥣 Sólidos</h2>
+  <div class="solids-hero"><div class="solids-clock" id="solidsClock">3:27</div><div class="solids-today">Hoy</div></div>
+  <label class="solids-field">Cantidad tomada</label>
+  <div class="solids-quantity"><button type="button" id="solidsMinus" aria-label="Restar 5 ml">−</button><input id="solidsAmount" type="number" min="0" max="2000" step="5" inputmode="numeric" placeholder="90"><button type="button" id="solidsPlus" aria-label="Sumar 5 ml">+</button></div><div class="solids-unit">mililitros (ml)</div>
+  <label class="solids-field" for="solidsNotes">Comentario<textarea class="solids-textarea" id="solidsNotes" placeholder="Añade algún detalle (opcional)"></textarea></label>
+  <div class="solids-actions"><button class="btn light" id="solidsCancel">Cancelar</button><button class="btn" id="solidsSave">Guardar sólidos</button></div><p id="solidsMsg" class="muted"></p>
  </div>
 </div>
 
