@@ -12,6 +12,48 @@ main{max-width:680px;margin:auto;padding:16px}.card{background:white;border:1px 
 label{display:grid;gap:6px;font-size:12px;font-weight:700;color:#756875;margin:9px 0}input,select,textarea{font:inherit;border:1px solid #eadfe6;border-radius:12px;padding:12px;background:white;color:var(--ink);width:100%;font-size:14px}textarea{min-height:72px}
 nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:#ffffffed;border-top:1px solid var(--line);padding:9px 4px calc(9px + env(safe-area-inset-bottom));backdrop-filter:blur(12px)}nav button{border:0;background:none;color:#968b97;font-size:11px;padding:3px}nav b{display:block;font-size:21px;font-weight:400;margin-bottom:2px}.tab.active{color:#a97894;font-weight:800}.view{display:none}.view.active{display:block}
 .item{padding:11px 0;border-bottom:1px solid #f1ebef;font-size:12px}.item:last-child{border:0}.item-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.delete-btn{border:0;border-radius:10px;padding:7px 10px;background:#fff0f2;color:#a34f68;font-weight:700;font-size:12px;flex-shrink:0}.pill{display:inline-block;background:#f3edf5;border-radius:20px;padding:5px 9px;font-size:11px;margin:2px}.notice{background:#fff7e9;border:1px solid #f3e6c9;border-radius:14px;padding:11px;color:#806c4c;font-size:11px;line-height:1.5}.hidden{display:none!important}.chat{background:#f4edf7;border-radius:15px;padding:12px;margin:9px 0;font-size:13px;line-height:1.5}.right{background:#fceef3;margin-left:18px}.row{display:flex;gap:8px}.row>*{flex:1}
+
+/* Fede's Sleep 2.0 — nueva línea gráfica nocturna */
+:root{--ink:#f1efff;--muted:#aaa7d2;--pink:#26234d;--rose:#a99aff;--lav:#292653;--mint:#28264e;--line:#34315f;--white:#201e43}
+html{background:#111027}
+body{background:radial-gradient(ellipse at 50% 0%,#29245a 0%,#171632 48%,#101020 100%);color:#f1efff;padding-bottom:88px}
+header{background:rgba(25,23,54,.96);border-bottom:1px solid #383366;border-radius:0 0 28px 28px}
+.logo{background:#302b62;color:#fff;box-shadow:0 0 24px #8878ff35}
+h1{color:#f5f2ff}.sub{color:#aaa5d4}
+main{padding:16px}
+.card{background:linear-gradient(145deg,rgba(39,36,81,.96),rgba(28,26,59,.98));border:1px solid #393567;box-shadow:0 12px 32px #08081766,inset 0 1px 0 #ffffff08;color:#f1efff}
+.head h2,.head h3{color:#f3f0ff}
+.muted,.item{color:#aaa7cc}
+.hero{position:relative;isolation:isolate;overflow:hidden;min-height:340px;max-width:390px;margin:8px auto 22px;border-radius:50%;aspect-ratio:1/1;display:flex;flex-direction:column;justify-content:center;align-items:center;background:radial-gradient(circle at center,#24214d 0 48%,#1c1a3d 49% 64%,#292653 65% 100%);border:1px solid #514b91;box-shadow:0 0 35px #786bff20,inset 0 0 34px #8b7dff12}
+.hero:before{content:"";position:absolute;inset:12%;border:2px dotted #8e82ff9c;border-radius:50%;z-index:-1;box-shadow:0 0 18px #8174ff35}
+.hero>div:first-child{font-size:27px;filter:drop-shadow(0 0 9px #9b8cff)}
+.hero #sleepState{font-size:15px;color:#c9c4ff}
+.hero .big{font-size:clamp(34px,9vw,48px);color:#fff;text-shadow:0 0 24px #a99aff65;margin:12px 0 18px;font-variant-numeric:tabular-nums}
+.btn{background:linear-gradient(135deg,#8275f4,#a28cff);color:#fff;border:1px solid #b0a5ff55;box-shadow:0 5px 20px #7667e83b}
+.btn.alt{background:linear-gradient(135deg,#a17cf0,#bd8de8)}
+.btn.light{background:#29264f;color:#d9d4ff;border:1px solid #3c376e;box-shadow:none}
+.btn:active{transform:scale(.98)}
+.metric{background:linear-gradient(145deg,#252248,#211f42);border-color:#393565}
+.metric strong{color:#fff}.metric span{color:#aaa6cf}
+input,select,textarea{background:#1c1a3a;border-color:#403b70;color:#f2efff}
+input::placeholder,textarea::placeholder{color:#8884b1}
+label{color:#c6c1e7}
+nav{background:rgba(23,21,49,.96);border-top:1px solid #393565;backdrop-filter:blur(18px)}
+nav button{color:#8f8bb7}
+.tab.active{color:#b3a7ff;text-shadow:0 0 12px #9b8cff65}
+.item{border-bottom-color:#393565}
+.item b{color:#e9e5ff}
+.delete-btn{background:#48263f;color:#ffb8d0;border:1px solid #78415d}
+.notice{background:#292544;border-color:#514779;color:#c9c1e8}
+.pill{background:#393365;color:#d9d2ff}
+.chat{background:#302b5b;color:#eeeaff}
+.right{background:#49304f}
+#entries{color:#c3bfdf}
+#entries .item{color:#aaa7cc}
+#entries .item-top{color:#f1efff}
+#setup .card,#record .card,#history .card,#ai .card,#family .card{border-radius:24px}
+@media(max-width:430px){.hero{width:min(100%,350px);min-height:0}.hero .big{font-size:39px}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
