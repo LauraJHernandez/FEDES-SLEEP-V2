@@ -688,7 +688,10 @@ function renderStats(){
   if(meds.length)html+='<p class="muted">Medicamentos: '+meds.map(e=>e.details?.medicine_name||'Medicina').join(', ')+'</p>';
  }
  $('statsDetail').innerHTML=html;
- document.querySelectorAll('[data-stat]').forEach(b=>b.classList.toggle('active',b.dataset.stat===activeStat));
+ const statButtons=[...document.querySelectorAll('#statsSections [data-stat]')];
+ statButtons.forEach(b=>b.classList.toggle('active',b.dataset.stat===activeStat));
+ const selected=statButtons.find(b=>b.dataset.stat===activeStat);
+ if(selected)selected.insertAdjacentElement('afterend',$('statsDetail'));
  $('statsPeriod').textContent=from===to?'Datos del '+start.toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'}):'Datos del '+start.toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'})+' al '+end.toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'});
 }
 async function loadStatistics(){
