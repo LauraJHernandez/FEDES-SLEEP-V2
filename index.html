@@ -295,6 +295,29 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 #diaperSheet .lactation-actions button{flex:1;min-height:52px;font-size:15px}
 #diaperSheet #diaperMsg{margin:6px 0 0;text-align:center}
 @media(max-height:740px){#diaperSheet .diaper-lactation-panel{max-height:calc(100dvh - 80px);padding-top:12px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}#diaperSheet .diaper-hero{margin:5px 0 10px}#diaperSheet .diaper-clock{font-size:34px}#diaperSheet .diaper-option .diaper-symbol{width:52px;height:52px}#diaperSheet .diaper-notes{height:64px;min-height:64px}}
+
+/* Temperatura: ventana inferior con la misma identidad visual de Lactancia */
+#temperatureSheet{position:fixed;inset:0;z-index:80;background:#080817aa;backdrop-filter:blur(10px);display:none;align-items:flex-end;padding:0}
+#temperatureSheet.open{display:flex}
+#temperatureSheet .temperature-panel{width:100%;max-width:680px;max-height:90dvh;overflow:auto;margin:0 auto;padding:16px 18px calc(24px + env(safe-area-inset-bottom));border:1px solid #514b91;border-bottom:0;border-radius:28px 28px 0 0;background:linear-gradient(145deg,#272451,#181635);color:#f1efff;box-shadow:0 -18px 50px #08081788;box-sizing:border-box}
+#temperatureSheet .sheet-handle{width:58px;height:7px;border-radius:20px;background:#77738f;margin:0 auto 16px}
+#temperatureSheet h2{text-align:center;font-size:24px;margin:6px 0 8px;color:#c9c4ff}
+#temperatureSheet .temperature-icon{text-align:center;font-size:76px;line-height:1.2;margin:4px 0 10px;filter:drop-shadow(0 0 18px #8e82ff44)}
+#temperatureSheet .temperature-hero{text-align:center;margin:24px 0 12px}
+#temperatureSheet .temperature-clock{font-size:clamp(42px,12vw,58px);line-height:1.05;font-weight:600;color:#fff;font-variant-numeric:tabular-nums}
+#temperatureSheet .temperature-today{font-size:18px;color:#777492;margin-top:10px}
+#temperatureSheet .temperature-reading{display:flex;align-items:center;justify-content:space-between;margin:8px 0 18px;font-size:20px;font-weight:600;color:#f1efff}
+#temperatureSheet .temperature-reading output{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+#temperatureSheet .temperature-range{appearance:none;-webkit-appearance:none;width:100%;height:8px;border-radius:99px;outline:none;background:linear-gradient(to right,#8e82ff 0%,#8e82ff var(--range-progress,37.5%),#292747 var(--range-progress,37.5%),#292747 100%);margin:0 0 44px;touch-action:pan-y}
+#temperatureSheet .temperature-range::-webkit-slider-thumb{-webkit-appearance:none;width:42px;height:42px;border-radius:50%;background:#f8f7fb;border:0;box-shadow:0 2px 10px #0003}
+#temperatureSheet .temperature-range::-moz-range-thumb{width:42px;height:42px;border-radius:50%;background:#f8f7fb;border:0;box-shadow:0 2px 10px #0003}
+#temperatureSheet .temperature-comment-label{display:block;font-size:20px;font-weight:600;margin:0 0 8px;color:#f1efff}
+#temperatureSheet #temperatureNotes{display:block;width:100%;height:150px;box-sizing:border-box;margin-top:18px;padding:18px;border:0;border-radius:22px;background:#242241;color:#f1efff;font:inherit;font-size:17px;resize:vertical}
+#temperatureSheet #temperatureNotes::placeholder{color:#777492}
+#temperatureSheet .lactation-actions{display:flex;gap:10px;margin-top:18px}
+#temperatureSheet .lactation-actions button{flex:1;min-height:52px;font-size:15px}
+#temperatureSheet #temperatureMsg{margin:6px 0 0;text-align:center}
+@media(max-height:740px){#temperatureSheet .temperature-panel{max-height:calc(100dvh - 80px);padding-top:12px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}#temperatureSheet .temperature-icon{font-size:60px;margin:0 0 6px}#temperatureSheet .temperature-hero{margin:12px 0 8px}#temperatureSheet .temperature-clock{font-size:42px}#temperatureSheet .temperature-range{margin-bottom:28px}#temperatureSheet #temperatureNotes{height:100px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
@@ -392,6 +415,17 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
  </div>
 </div>
 
+<div id="temperatureSheet" role="dialog" aria-modal="true" aria-label="Registrar temperatura">
+ <div class="lactation-panel temperature-panel"><div class="sheet-handle"></div>
+  <div class="temperature-icon" aria-hidden="true">🌡️</div><h2>Temperatura</h2>
+  <div class="temperature-hero"><div class="temperature-clock" id="temperatureClock"></div><div class="temperature-today">Hoy</div></div>
+  <div class="temperature-reading"><label for="temperatureRange">Temperatura</label><output id="temperatureValue" for="temperatureRange">37 °C</output></div>
+  <input id="temperatureRange" class="temperature-range" type="range" min="34" max="42" step="0.1" value="37">
+  <label class="temperature-comment-label" for="temperatureNotes">Comentario<textarea id="temperatureNotes" placeholder="Añade algún detalle (opcional)"></textarea></label>
+  <div class="lactation-actions"><button class="btn light" id="temperatureCancel">Cancelar</button><button class="btn" id="temperatureSave">Guardar temperatura</button></div><p id="temperatureMsg" class="muted"></p>
+ </div>
+</div>
+
 <div id="diaperSheet" role="dialog" aria-modal="true" aria-label="Registrar cambio de pañal">
  <div class="lactation-panel diaper-lactation-panel"><div class="sheet-handle"></div>
   <h2>🩲 Cambio de pañal</h2>
@@ -454,12 +488,20 @@ document.querySelectorAll('[data-activity]').forEach(b=>b.onclick=()=>{
  if(b.dataset.activity==='breastfeed'){openLactationSheet();return}
  if(b.dataset.activity==='solids'){openSolidsSheet();return}
  if(b.dataset.activity==='diaper'){openDiaperSheet();return}
+ if(b.dataset.activity==='temperature'){openTemperatureSheet();return}
  $('type').value='note';
  fields();$('recordTitle').textContent='Registrar '+names[b.dataset.activity];
  $('notes').value='Actividad: '+names[b.dataset.activity]+'. ';
  $('occurred').value=localNow();show('record');
 });
 
+
+function updateTemperatureDisplay(){const v=Number($('temperatureRange').value);$('temperatureValue').textContent=v.toFixed(1).replace('.0','')+' °C';const pct=((v-34)/(42-34))*100;$('temperatureRange').style.setProperty('--range-progress',pct+'%')}
+$('temperatureRange').oninput=updateTemperatureDisplay;
+function openTemperatureSheet(){const d=new Date();$('temperatureClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\\s?[ap]\\.?\\s?m\\.?/i,'').trim();$('temperatureRange').value='37';updateTemperatureDisplay();$('temperatureNotes').value='';msg('temperatureMsg','');$('temperatureSheet').classList.add('open')}
+$('temperatureCancel').onclick=()=>$('temperatureSheet').classList.remove('open');
+$('temperatureSave').onclick=async()=>{if(!sb||!familyId||!user)return msg('temperatureMsg','Primero inicia sesión y conecta tu espacio familiar.');const payload={family_id:familyId,created_by:user.id,kind:'symptom',occurred_at:new Date().toISOString(),details:{symptom:'Temperatura',temperature:Number($('temperatureRange').value),notes:$('temperatureNotes').value}};const {error}=await sb.from('entries').insert(payload);if(error)return msg('temperatureMsg',error.message);$('temperatureSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
+$('temperatureSheet').addEventListener('click',e=>{if(e.target===$('temperatureSheet'))$('temperatureSheet').classList.remove('open')});
 let selectedDiaper='';
 function openDiaperSheet(){selectedDiaper='';const d=new Date();$('diaperClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\s?[ap]\.?\s?m\.?/i,'').trim();$('diaperNotes').value='';msg('diaperMsg','');document.querySelectorAll('[data-diaper]').forEach(b=>b.classList.remove('selected'));$('diaperSheet').classList.add('open')}
 document.querySelectorAll('[data-diaper]').forEach(b=>b.onclick=()=>{selectedDiaper=b.dataset.diaper;document.querySelectorAll('[data-diaper]').forEach(x=>x.classList.toggle('selected',x===b))});
