@@ -161,6 +161,25 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 .lactation-clock-controls{display:grid;gap:7px;margin-top:8px}.lactation-clock-controls button{width:100%;min-height:42px;font-size:14px}.lactation-clock-controls .hidden{display:none!important}
 .lactation-total{text-align:center;color:#c9c4ff;font-size:14px;margin:16px 0}.lactation-actions{display:flex;gap:10px}.lactation-actions button{flex:1;min-height:52px;font-size:16px}
 @media(max-width:360px){.lactation-panel{padding-left:12px;padding-right:12px}.lactation-clock{padding:14px 7px}.lactation-clock button{font-size:12px}}
+
+/* Sesión de sólidos: diseño de referencia a pantalla completa */
+#solidsSheet{position:fixed;inset:0;z-index:95;display:none;align-items:flex-end;justify-content:center;background:#08081766;backdrop-filter:blur(9px);padding:0 16px 0}
+#solidsSheet.open{display:flex}
+.solids-panel{position:relative;width:100%;max-width:680px;height:calc(100dvh - 207px);min-height:570px;max-height:calc(100dvh - 150px);overflow:auto;border:1px solid #514b91;border-radius:58px;background:linear-gradient(145deg,#242142 0%,#1c1a38 100%);color:#f4f1ff;padding:74px 28px calc(104px + env(safe-area-inset-bottom));box-shadow:0 -12px 45px #08081766}
+.solids-handle{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:66px;height:9px;border-radius:20px;background:#77738f}
+.solids-hero{text-align:center;margin:30px 0 34px}
+.solids-bowl{font-size:82px;line-height:1.1;filter:drop-shadow(0 0 16px #55efbd66)}
+.solids-title{font-size:34px;font-weight:650;color:#c9c5f4;margin:32px 0 48px}
+.solids-clock{font-size:72px;line-height:1.05;font-weight:600;letter-spacing:-2px;color:#fff;font-variant-numeric:tabular-nums}
+.solids-today{font-size:28px;color:#777493;margin-top:22px}
+.solids-field{display:block;margin:48px 0 0;font-size:28px;font-weight:600;color:#f3f1ff}
+.solids-input,.solids-textarea{display:block;width:100%;box-sizing:border-box;border:0;outline:0;background:#262444;color:#f5f2ff;border-radius:28px;padding:34px 42px;margin-top:26px;font:inherit;font-size:28px;font-weight:400;box-shadow:inset 0 1px 12px #ffffff05}
+.solids-input{height:116px}.solids-input::placeholder,.solids-textarea::placeholder{color:#777493;opacity:1}
+.solids-textarea{height:255px;resize:none;line-height:1.4}
+.solids-save{position:absolute;left:50%;bottom:calc(62px + env(safe-area-inset-bottom));transform:translateX(-50%);width:132px;height:132px;border:3px solid #a9a4ff;border-radius:50%;background:linear-gradient(145deg,#8c83ff,#b5aaff);color:white;font-size:52px;display:grid;place-items:center;box-shadow:0 0 28px #958aff88}
+.solids-save:active{transform:translateX(-50%) scale(.96)}
+@media(max-width:500px){.solids-panel{padding-left:28px;padding-right:28px}.solids-hero{margin-top:28px}.solids-bowl{font-size:82px}.solids-title{font-size:34px;margin:32px 0 48px}.solids-clock{font-size:72px}.solids-today{font-size:28px}.solids-field{font-size:28px;margin-top:48px}.solids-input,.solids-textarea{font-size:27px;padding:30px 42px}.solids-input{height:116px}.solids-textarea{height:255px}}
+@media(max-height:760px){.solids-panel{height:calc(100dvh - 150px);padding-top:32px}.solids-hero{margin:8px 0 20px}.solids-bowl{font-size:58px}.solids-title{font-size:26px;margin:14px 0 24px}.solids-clock{font-size:54px}.solids-today{font-size:20px;margin-top:10px}.solids-field{font-size:19px;margin-top:24px}.solids-input,.solids-textarea{font-size:18px;padding:18px 22px;margin-top:14px}.solids-input{height:70px}.solids-textarea{height:130px}.solids-save{width:82px;height:82px;font-size:34px;bottom:24px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
@@ -258,6 +277,15 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
  </div>
 </div>
 
+<div id="solidsSheet" role="dialog" aria-modal="true" aria-label="Registrar sólidos">
+ <div class="solids-panel"><div class="solids-handle"></div>
+  <div class="solids-hero"><div class="solids-bowl">🥣</div><div class="solids-title">Sólidos</div><div class="solids-clock" id="solidsClock">3:27</div><div class="solids-today">Hoy</div></div>
+  <label class="solids-field">Cantidad tomada (ml)<input class="solids-input" id="solidsAmount" type="number" min="0" max="2000" step="1" inputmode="numeric" placeholder="Agregar cantidad"></label>
+  <label class="solids-field">Comentario<textarea class="solids-textarea" id="solidsNotes" placeholder="Aún no se agregan comentarios"></textarea></label>
+  <button class="solids-save" id="solidsSave" aria-label="Guardar sólidos">✓</button><p id="solidsMsg" class="muted"></p>
+ </div>
+</div>
+
 <div id="bottleSheet" role="dialog" aria-modal="true" aria-label="Registrar toma de biberón">
  <div class="bottle-panel"><div class="sheet-handle"></div>
   <div class="bottle-hero">🍼</div><h2>Toma de biberón</h2>
@@ -292,12 +320,17 @@ document.querySelectorAll('[data-activity]').forEach(b=>b.onclick=()=>{
  if(b.dataset.activity==='wake'){openWakeClock();return}
  if(b.dataset.activity==='bottle'){openBottleSheet();return}
  if(b.dataset.activity==='breastfeed'){openLactationSheet();return}
+ if(b.dataset.activity==='solids'){openSolidsSheet();return}
  else if(b.dataset.activity==='diaper')$('type').value='diaper';
  else $('type').value='note';
  fields();$('recordTitle').textContent='Registrar '+names[b.dataset.activity];
  $('notes').value='Actividad: '+names[b.dataset.activity]+'. ';
  $('occurred').value=localNow();show('record');
 });
+
+function openSolidsSheet(){const d=new Date();$('solidsClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\s?[ap]\.?\s?m\.?/i,'').trim();$('solidsAmount').value='';$('solidsNotes').value='';msg('solidsMsg','');$('solidsSheet').classList.add('open')}
+$('solidsSave').onclick=async()=>{if(!sb||!familyId||!user)return msg('solidsMsg','Primero inicia sesión y conecta tu espacio familiar.');const amount=$('solidsAmount').value.trim();if(!amount||Number(amount)<0)return msg('solidsMsg','Agrega la cantidad tomada.');const payload={family_id:familyId,created_by:user.id,kind:'solids',occurred_at:new Date().toISOString(),details:{amount_ml:Number(amount),notes:$('solidsNotes').value}};const {error}=await sb.from('entries').insert(payload);if(error)return msg('solidsMsg',error.message);$('solidsSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
+$('solidsSheet').addEventListener('click',e=>{if(e.target===$('solidsSheet'))$('solidsSheet').classList.remove('open')});
 
 let bottleMilkType='';
 function openBottleSheet(){bottleMilkType='';$('bottleTime').value=localNow();$('bottleAmount').value='90';$('bottleNotes').value='';msg('bottleMsg','');document.querySelectorAll('[data-milk]').forEach(x=>x.classList.remove('selected'));$('bottleSheet').classList.add('open')}
