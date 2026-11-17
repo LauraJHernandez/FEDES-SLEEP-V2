@@ -650,6 +650,12 @@ function renderStats(){
  const start=new Date(fy,fm-1,fd,0,0,0,0),end=new Date(ty,tm-1,td,23,59,59,999);
  if(start>end){$('statsPeriod').textContent='La fecha inicial no puede ser posterior a la fecha final.';$('statsDetail').innerHTML='<p class="stats-empty">Revisa el intervalo seleccionado.</p>';return}
  const rows=statsEntries.filter(e=>new Date(e.occurred_at)>=start&&new Date(e.occurred_at)<=end);
+ if(!activeStat){
+  $('statsDetail').classList.add('hidden');
+  document.querySelectorAll('#statsSections [data-stat]').forEach(b=>b.classList.remove('active'));
+  $('statsPeriod').textContent=from===to?'Datos del '+start.toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'}):'Datos del '+start.toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'})+' al '+end.toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'});
+  return;
+ }
  const sleeps=rows.filter(e=>e.kind==='sleep'&&e.ended_at),sleepMins=sleeps.reduce((s,e)=>s+statDuration(e),0);
  const night=sleeps.filter(inNight).reduce((s,e)=>s+statDuration(e),0),day=Math.max(0,sleepMins-night);
  const naps=sleeps.filter(e=>{const h=new Date(e.occurred_at).getHours();return h>=7&&h<19}),napMins=naps.reduce((s,e)=>s+statDuration(e),0);
@@ -688,6 +694,7 @@ function renderStats(){
   if(meds.length)html+='<p class="muted">Medicamentos: '+meds.map(e=>e.details?.medicine_name||'Medicina').join(', ')+'</p>';
  }
  $('statsDetail').innerHTML=html;
+ $('statsDetail').classList.remove('hidden');
  const statButtons=[...document.querySelectorAll('#statsSections [data-stat]')];
  statButtons.forEach(b=>b.classList.toggle('active',b.dataset.stat===activeStat));
  const selected=statButtons.find(b=>b.dataset.stat===activeStat);
@@ -701,7 +708,7 @@ async function loadStatistics(){
  if(error){$('statsDetail').innerHTML='<p class="stats-empty">No se pudieron cargar las estadísticas: '+error.message+'</p>';return}
  statsEntries=data||[];renderStats();
 }
-document.querySelectorAll('[data-stat]').forEach(b=>b.onclick=()=>{activeStat=b.dataset.stat;renderStats()});
+document.querySelectorAll('#statsSections [data-stat]').forEach(b=>b.onclick=()=>{activeStat=activeStat===b.dataset.stat?null:b.dataset.stat;renderStats()});
 const statsToday=[new Date().getFullYear(),String(new Date().getMonth()+1).padStart(2,'0'),String(new Date().getDate()).padStart(2,'0')].join('-');
 $('statsDateFrom').value=statsToday;$('statsDateTo').value=statsToday;
 function formatDateLabel(value){if(!value)return '';const [y,m,d]=value.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'})}
