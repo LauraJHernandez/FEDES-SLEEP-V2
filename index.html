@@ -416,7 +416,7 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 <label>Observaciones<textarea id="notes"></textarea></label><button class="btn">Guardar en la nube</button></form><p id="recordMsg" class="muted"></p></div></section>
 <section id="history" class="view">
  <div class="card">
-  <div class="head"><h2>▥ Estadísticas</h2></div><div class="stats-filters single"><label>Periodo<input id="statsDate" type="date" aria-label="Seleccionar fecha para consultar"></label></div>
+  <div class="head"><h2>▥ Estadísticas</h2></div><div class="stats-filters"><label>Desde<input id="statsDateFrom" type="date" aria-label="Fecha inicial"></label><label>Hasta<input id="statsDateTo" type="date" aria-label="Fecha final"></label></div>
   <p class="muted" id="statsPeriod">Resumen de actividad de Federico</p>
   <div id="statsSections" class="stats-sections">
    <button class="stats-row active" data-stat="sleep"><span class="stats-icon">🌙</span><span><b>Resumen del sueño</b><small>Total de horas y distribución (nocturno y diurno)</small></span><i>›</i></button>
@@ -573,9 +573,11 @@ function statTime(t){return new Date(t).toLocaleTimeString('es-CO',{hour:'numeri
 function inNight(e){const h=new Date(e.occurred_at).getHours();return h>=19||h<7}
 function statCard(value,label){return '<div class="stats-kpi"><strong>'+value+'</strong><span>'+label+'</span></div>'}
 function renderStats(){
- const now=new Date(),picked=$('statsDate').value;
- const selected=picked||[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
- const [y,m,d]=selected.split('-').map(Number),start=new Date(y,m-1,d,0,0,0,0),end=new Date(y,m-1,d,23,59,59,999);
+ const now=new Date(),today=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
+ const from=$('statsDateFrom').value||today,to=$('statsDateTo').value||today;
+ const [fy,fm,fd]=from.split('-').map(Number),[ty,tm,td]=to.split('-').map(Number);
+ const start=new Date(fy,fm-1,fd,0,0,0,0),end=new Date(ty,tm-1,td,23,59,59,999);
+ if(start>end){$('statsPeriod').textContent='La fecha inicial no puede ser posterior a la fecha final.';$('statsDetail').innerHTML='<p class="stats-empty">Revisa el intervalo seleccionado.</p>';return}
  const rows=statsEntries.filter(e=>new Date(e.occurred_at)>=start&&new Date(e.occurred_at)<=end);
  const sleeps=rows.filter(e=>e.kind==='sleep'&&e.ended_at),sleepMins=sleeps.reduce((s,e)=>s+statDuration(e),0);
  const night=sleeps.filter(inNight).reduce((s,e)=>s+statDuration(e),0),day=Math.max(0,sleepMins-night);
@@ -611,7 +613,7 @@ function renderStats(){
  }
  $('statsDetail').innerHTML=html;
  document.querySelectorAll('[data-stat]').forEach(b=>b.classList.toggle('active',b.dataset.stat===activeStat));
- $('statsPeriod').textContent='Datos del '+start.toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
+ $('statsPeriod').textContent=from===to?'Datos del '+start.toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'}):'Datos del '+start.toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'})+' al '+end.toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'});
 }
 async function loadStatistics(){
  if(!sb||!familyId){$('statsDetail').innerHTML='<p class="stats-empty">Inicia sesión y conecta tu espacio familiar para consultar las estadísticas.</p>';return}
@@ -621,7 +623,7 @@ async function loadStatistics(){
  statsEntries=data||[];renderStats();
 }
 document.querySelectorAll('[data-stat]').forEach(b=>b.onclick=()=>{activeStat=b.dataset.stat;renderStats()});
-$('statsDate').value=[new Date().getFullYear(),String(new Date().getMonth()+1).padStart(2,'0'),String(new Date().getDate()).padStart(2,'0')].join('-');$('statsDate').onchange=renderStats;$('statsRefresh').onclick=loadStatistics;
+const statsToday=[new Date().getFullYear(),String(new Date().getMonth()+1).padStart(2,'0'),String(new Date().getDate()).padStart(2,'0')].join('-');$('statsDateFrom').value=statsToday;$('statsDateTo').value=statsToday;$('statsDateFrom').onchange=renderStats;$('statsDateTo').onchange=renderStats;$('statsRefresh').onclick=loadStatistics;
 
 const activitySheet=$('activitySheet');
 $('openActivities').onclick=()=>activitySheet.classList.add('open');
