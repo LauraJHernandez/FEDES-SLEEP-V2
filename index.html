@@ -197,6 +197,30 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 .solids-textarea{height:170px;line-height:1.4}
 .solids-save{width:92px;height:92px;font-size:38px;border-width:2px;bottom:22px}
 @media(max-height:760px){.solids-panel{height:90dvh;max-height:90dvh;padding-top:34px;padding-bottom:104px}.solids-hero{margin-top:4px}.solids-bowl{font-size:48px}.solids-title{font-size:24px;margin:12px 0 16px}.solids-clock{font-size:48px}.solids-today{font-size:17px;margin-top:7px}.solids-field{font-size:17px;margin-top:20px}.solids-input{height:62px}.solids-textarea{height:112px}.solids-save{width:72px;height:72px;font-size:30px;bottom:16px}}
+
+/* Sesión de cambio de pañal: diseño compacto móvil */
+#diaperSheet{position:fixed;inset:0;z-index:96;display:none;align-items:flex-end;justify-content:center;background:#08081766;backdrop-filter:blur(9px);padding:0 12px}
+#diaperSheet.open{display:flex}
+.diaper-panel{position:relative;width:100%;max-width:680px;height:88dvh;min-height:0;max-height:88dvh;box-sizing:border-box;overflow:auto;scrollbar-width:none;border:1px solid #514b91;border-radius:48px 48px 0 0;background:linear-gradient(145deg,#242142,#1c1a38);color:#f4f1ff;padding:48px 24px calc(112px + env(safe-area-inset-bottom));box-shadow:0 -12px 45px #08081766}
+.diaper-panel::-webkit-scrollbar{display:none}
+.diaper-handle{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:58px;height:7px;border-radius:20px;background:#77738f}
+.diaper-hero{text-align:center;margin:10px 0 0}
+.diaper-icon{font-size:62px;line-height:1;filter:drop-shadow(0 0 14px #ee83d366)}
+.diaper-title{font-size:29px;line-height:1.2;font-weight:650;color:#c9c5f4;margin:18px 0 26px}
+.diaper-clock{font-size:60px;line-height:1.05;font-weight:600;letter-spacing:-1.5px;color:#fff;font-variant-numeric:tabular-nums}
+.diaper-today{font-size:21px;color:#777493;margin-top:12px}
+.diaper-field-title{display:block;margin:30px 0 16px;font-size:19px;line-height:1.25;font-weight:600;color:#f3f1ff}
+.diaper-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.diaper-option{border:0;background:transparent;color:#c9c5f4;display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 2px;font:inherit;font-size:16px}
+.diaper-option .diaper-symbol{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:#262444;color:#f4f1ff;font-size:34px;border:2px solid transparent}
+.diaper-option.selected .diaper-symbol{border-color:#a99dff;background:#34305f;box-shadow:0 0 16px #958aff55}
+.diaper-option.selected{color:#fff}
+.diaper-notes{display:block;width:100%;height:170px;box-sizing:border-box;resize:none;border:0;outline:0;border-radius:22px;background:#262444;color:#f5f2ff;padding:22px 28px;margin-top:16px;font:inherit;font-size:18px;line-height:1.4}
+.diaper-notes::placeholder{color:#777493;opacity:1}
+.diaper-save{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);width:92px;height:92px;border:2px solid #a9a4ff;border-radius:50%;background:linear-gradient(145deg,#8c83ff,#b5aaff);color:#fff;font-size:38px;display:grid;place-items:center;box-shadow:0 0 28px #958aff88}
+.diaper-save:active{transform:translateX(-50%) scale(.96)}
+@media(max-width:380px){.diaper-option .diaper-symbol{width:62px;height:62px;font-size:28px}.diaper-option{font-size:14px}}
+@media(max-height:760px){.diaper-panel{height:90dvh;max-height:90dvh;padding-top:34px;padding-bottom:104px}.diaper-hero{margin-top:4px}.diaper-icon{font-size:48px}.diaper-title{font-size:24px;margin:12px 0 16px}.diaper-clock{font-size:48px}.diaper-today{font-size:17px;margin-top:7px}.diaper-field-title{font-size:17px;margin:20px 0 10px}.diaper-option .diaper-symbol{width:58px;height:58px;font-size:26px}.diaper-option{font-size:13px;gap:6px}.diaper-notes{height:112px;font-size:16px;padding:18px 22px}.diaper-save{width:72px;height:72px;font-size:30px;bottom:16px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
@@ -294,6 +318,21 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
  </div>
 </div>
 
+<div id="diaperSheet" role="dialog" aria-modal="true" aria-label="Registrar cambio de pañal">
+ <div class="diaper-panel"><div class="diaper-handle"></div>
+  <div class="diaper-hero"><div class="diaper-icon">🩲</div><div class="diaper-title">Cambio de pañal</div><div class="diaper-clock" id="diaperClock"></div><div class="diaper-today">Hoy</div></div>
+  <div class="diaper-field-title">Contenido del pañal</div>
+  <div class="diaper-options">
+   <button type="button" class="diaper-option" data-diaper="Seco"><span class="diaper-symbol">×</span><span>Seco</span></button>
+   <button type="button" class="diaper-option" data-diaper="Orina"><span class="diaper-symbol">♧</span><span>Mojado</span></button>
+   <button type="button" class="diaper-option" data-diaper="Deposición"><span class="diaper-symbol">♟</span><span>Sucio</span></button>
+   <button type="button" class="diaper-option" data-diaper="Ambos"><span class="diaper-symbol">♧̸</span><span>Variado</span></button>
+  </div>
+  <label class="diaper-field-title" for="diaperNotes">Comentario<textarea class="diaper-notes" id="diaperNotes" placeholder="Aún no se agregan comentarios"></textarea></label>
+  <button class="diaper-save" id="diaperSave" aria-label="Guardar cambio de pañal">✓</button><p id="diaperMsg" class="muted"></p>
+ </div>
+</div>
+
 <div id="solidsSheet" role="dialog" aria-modal="true" aria-label="Registrar sólidos">
  <div class="solids-panel"><div class="solids-handle"></div>
   <div class="solids-hero"><div class="solids-bowl">🥣</div><div class="solids-title">Sólidos</div><div class="solids-clock" id="solidsClock">3:27</div><div class="solids-today">Hoy</div></div>
@@ -338,12 +377,19 @@ document.querySelectorAll('[data-activity]').forEach(b=>b.onclick=()=>{
  if(b.dataset.activity==='bottle'){openBottleSheet();return}
  if(b.dataset.activity==='breastfeed'){openLactationSheet();return}
  if(b.dataset.activity==='solids'){openSolidsSheet();return}
- else if(b.dataset.activity==='diaper')$('type').value='diaper';
+ if(b.dataset.activity==='diaper'){openDiaperSheet();return}
+ else $('type').value='note';
  else $('type').value='note';
  fields();$('recordTitle').textContent='Registrar '+names[b.dataset.activity];
  $('notes').value='Actividad: '+names[b.dataset.activity]+'. ';
  $('occurred').value=localNow();show('record');
 });
+
+let selectedDiaper='';
+function openDiaperSheet(){selectedDiaper='';const d=new Date();$('diaperClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\s?[ap]\.?\s?m\.?/i,'').trim();$('diaperNotes').value='';msg('diaperMsg','');document.querySelectorAll('[data-diaper]').forEach(b=>b.classList.remove('selected'));$('diaperSheet').classList.add('open')}
+document.querySelectorAll('[data-diaper]').forEach(b=>b.onclick=()=>{selectedDiaper=b.dataset.diaper;document.querySelectorAll('[data-diaper]').forEach(x=>x.classList.toggle('selected',x===b))});
+$('diaperSave').onclick=async()=>{if(!sb||!familyId||!user)return msg('diaperMsg','Primero inicia sesión y conecta tu espacio familiar.');if(!selectedDiaper)return msg('diaperMsg','Selecciona el contenido del pañal.');const payload={family_id:familyId,created_by:user.id,kind:'diaper',occurred_at:new Date().toISOString(),details:{diaper_type:selectedDiaper,notes:$('diaperNotes').value}};const {error}=await sb.from('entries').insert(payload);if(error)return msg('diaperMsg',error.message);$('diaperSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
+$('diaperSheet').addEventListener('click',e=>{if(e.target===$('diaperSheet'))$('diaperSheet').classList.remove('open')});
 
 function openSolidsSheet(){const d=new Date();$('solidsClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\s?[ap]\.?\s?m\.?/i,'').trim();$('solidsAmount').value='';$('solidsNotes').value='';msg('solidsMsg','');$('solidsSheet').classList.add('open')}
 $('solidsSave').onclick=async()=>{if(!sb||!familyId||!user)return msg('solidsMsg','Primero inicia sesión y conecta tu espacio familiar.');const amount=$('solidsAmount').value.trim();if(!amount||Number(amount)<0)return msg('solidsMsg','Agrega la cantidad tomada.');const payload={family_id:familyId,created_by:user.id,kind:'solids',occurred_at:new Date().toISOString(),details:{amount_ml:Number(amount),notes:$('solidsNotes').value}};const {error}=await sb.from('entries').insert(payload);if(error)return msg('solidsMsg',error.message);$('solidsSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
@@ -389,7 +435,7 @@ async function afterLogin(u){user=u;familyId=null;$('familyCard').classList.remo
 $('createFamily').onclick=async()=>{let {data,error}=await sb.rpc('create_family',{family_name:'Familia de Federico'});if(error)return msg('familyMsg',error.message);familyId=data;await afterLogin(user);msg('familyMsg','Espacio familiar creado. Comparte el código con David.')};
 $('joinFamily').onclick=async()=>{let code=$('inviteCode').value.trim();let {data,error}=await sb.rpc('join_family',{invite_code_input:code});if(error)return msg('familyMsg',error.message);familyId=data;await afterLogin(user);msg('familyMsg','¡Te uniste a la familia!')};
 function fields(){let t=$('type').value;['feed','diaper','symptom'].forEach(x=>$(x+'Fields').classList.toggle('hidden',t!==x));$('recordTitle').textContent='Registrar '+({feed:'lactancia',diaper:'pañal',symptom:'síntoma',note:'nota'}[t])}
-$('type').onchange=fields;document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{if(b.dataset.form==='feed'){openLactationSheet();return}$('type').value=b.dataset.form;fields();$('occurred').value=localNow();show('record')});
+$('type').onchange=fields;document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{if(b.dataset.form==='feed'){openLactationSheet();return}if(b.dataset.form==='diaper'){openDiaperSheet();return}$('type').value=b.dataset.form;fields();$('occurred').value=localNow();show('record')});
 $('recordForm').onsubmit=async e=>{e.preventDefault();if(!sb||!familyId)return msg('recordMsg','Primero inicia sesión y crea o únete a una familia.');let type=$('type').value,payload={family_id:familyId,created_by:user.id,kind:type,occurred_at:new Date($('occurred').value).toISOString(),details:{notes:$('notes').value}};if(type==='feed')Object.assign(payload.details,{breast:$('breast').value,duration_minutes:Number($('minutes').value)||null});if(type==='diaper')payload.details.diaper_type=$('diaperKind').value;if(type==='symptom')Object.assign(payload.details,{symptom:$('symptomKind').value,temperature:$('temperature').value||null,severity:$('severity').value});let {error}=await sb.from('entries').insert(payload);if(error)return msg('recordMsg',error.message);$('recordForm').reset();$('occurred').value=localNow();fields();msg('recordMsg','Registro guardado y sincronizado. 💗');show('home')};
 async function loadEntries(){if(!sb||!familyId)return msg('entries','Inicia sesión y crea o únete a una familia.');let {data,error}=await sb.from('entries').select('id,kind,occurred_at,details,created_by').eq('family_id',familyId).order('occurred_at',{ascending:false}).limit(100);if(error)return msg('entries',error.message);$('entries').innerHTML=data.length?data.map(x=>'<div class="item"><div class="item-top"><b>'+({feed:'🤱 Lactancia',diaper:'🧷 Pañal',symptom:'🌡️ Síntoma',note:(x.details&&x.details.activity==='wake'?'🌅 Despertar':'📝 Nota'),sleep:'😴 Sueño'}[x.kind]||x.kind)+'</b><button class="delete-btn" data-delete="'+x.id+'">🗑️ Eliminar</button></div>'+new Date(x.occurred_at).toLocaleString('es-CO')+'<br>'+escapeHtml(JSON.stringify(x.details))+'</div>').join(''):'Aún no hay registros.';document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteEntry(b.dataset.delete))}
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
