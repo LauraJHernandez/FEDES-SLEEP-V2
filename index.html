@@ -844,6 +844,7 @@ $('statsCalendar').addEventListener('click',e=>{if(e.target===$('statsCalendar')
 updateStatsRangeLabel();$('statsRefresh').onclick=loadStatistics;
 
 const activitySheet=$('activitySheet');
+function returnToActivities(sheetId){$(sheetId).classList.remove('open');activitySheet.classList.add('open')}
 $('openActivities').onclick=()=>activitySheet.classList.add('open');
 $('activityClose').onclick=()=>activitySheet.classList.remove('open');
 activitySheet.addEventListener('click',e=>{if(e.target===activitySheet)activitySheet.classList.remove('open')});
@@ -867,25 +868,25 @@ document.querySelectorAll('[data-activity]').forEach(b=>b.onclick=()=>{
 function updateTemperatureDisplay(){const v=Number($('temperatureRange').value);$('temperatureValue').textContent=v.toFixed(1).replace('.0','')+' °C';const pct=((v-34)/(42-34))*100;$('temperatureRange').style.setProperty('--range-progress',pct+'%')}
 $('temperatureRange').oninput=updateTemperatureDisplay;
 function openTemperatureSheet(){const d=new Date();$('temperatureClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\s?[ap]\.?\s?m\.?/i,'').trim();$('temperatureRange').value='37';updateTemperatureDisplay();$('temperatureNotes').value='';msg('temperatureMsg','');$('temperatureSheet').classList.add('open')}
-$('temperatureCancel').onclick=()=>$('temperatureSheet').classList.remove('open');
+$('temperatureCancel').onclick=()=>returnToActivities('temperatureSheet');
 $('temperatureSave').onclick=async()=>{if(!sb||!familyId||!user)return msg('temperatureMsg','Primero inicia sesión y conecta tu espacio familiar.');const payload={family_id:familyId,created_by:user.id,kind:'symptom',occurred_at:new Date().toISOString(),details:{symptom:'Temperatura',temperature:Number($('temperatureRange').value),notes:$('temperatureNotes').value}};const {error}=await sb.from('entries').insert(payload);if(error)return msg('temperatureMsg',error.message);$('temperatureSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
 $('temperatureSheet').addEventListener('click',e=>{if(e.target===$('temperatureSheet'))$('temperatureSheet').classList.remove('open')});
 
 function openMedicineSheet(){const d=new Date();$('medicineClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\s?[ap]\. ?m\.?/i,'').trim();$('medicineTime').value=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');$('medicineType').value='';$('medicineName').value='';msg('medicineMsg','');$('medicineSheet').classList.add('open')}
-$('medicineCancel').onclick=()=>$('medicineSheet').classList.remove('open');
+$('medicineCancel').onclick=()=>returnToActivities('medicineSheet');
 $('medicineSave').onclick=async()=>{if(!sb||!familyId||!user)return msg('medicineMsg','Primero inicia sesión y conecta tu espacio familiar.');const type=$('medicineType').value,name=$('medicineName').value.trim(),time=$('medicineTime').value;if(!type||!name||!time)return msg('medicineMsg','Completa el tipo, el nombre y la hora de la toma.');const [hh,mm]=time.split(':').map(Number),occurred=new Date();occurred.setHours(hh,mm,0,0);const payload={family_id:familyId,created_by:user.id,kind:'symptom',occurred_at:occurred.toISOString(),details:{symptom:'Medicina',medicine_type:type,medicine_name:name,time}};const {error}=await sb.from('entries').insert(payload);if(error)return msg('medicineMsg',error.message);$('medicineSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
 $('medicineSheet').addEventListener('click',e=>{if(e.target===$('medicineSheet'))$('medicineSheet').classList.remove('open')});
 let selectedDiaper='';
 function openDiaperSheet(){selectedDiaper='';const d=new Date();$('diaperClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\s?[ap]\.?\s?m\.?/i,'').trim();$('diaperNotes').value='';msg('diaperMsg','');document.querySelectorAll('[data-diaper]').forEach(b=>b.classList.remove('selected'));$('diaperSheet').classList.add('open')}
 document.querySelectorAll('[data-diaper]').forEach(b=>b.onclick=()=>{selectedDiaper=b.dataset.diaper;document.querySelectorAll('[data-diaper]').forEach(x=>x.classList.toggle('selected',x===b))});
-$('diaperCancel').onclick=()=>$('diaperSheet').classList.remove('open');
+$('diaperCancel').onclick=()=>returnToActivities('diaperSheet');
 $('diaperSave').onclick=async()=>{if(!sb||!familyId||!user)return msg('diaperMsg','Primero inicia sesión y conecta tu espacio familiar.');if(!selectedDiaper)return msg('diaperMsg','Selecciona el contenido del pañal.');const payload={family_id:familyId,created_by:user.id,kind:'diaper',occurred_at:new Date().toISOString(),details:{diaper_type:selectedDiaper,notes:$('diaperNotes').value}};const {error}=await sb.from('entries').insert(payload);if(error)return msg('diaperMsg',error.message);$('diaperSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
 $('diaperSheet').addEventListener('click',e=>{if(e.target===$('diaperSheet'))$('diaperSheet').classList.remove('open')});
 
 let selectedSolidsTexture='';
 document.querySelectorAll('[data-texture]').forEach(b=>b.onclick=()=>{selectedSolidsTexture=b.dataset.texture;document.querySelectorAll('[data-texture]').forEach(x=>x.classList.toggle('selected',x===b))});
 document.querySelectorAll('[data-food]').forEach(b=>b.onclick=()=>b.classList.toggle('selected'));
-$('solidsCancel').onclick=()=>$('solidsSheet').classList.remove('open');
+$('solidsCancel').onclick=()=>returnToActivities('solidsSheet');
 function openSolidsSheet(){const d=new Date();$('solidsClock').textContent=d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit',hour12:true}).replace(/\s?[ap]\.\?\s?m\.\?/i,'').trim();selectedSolidsTexture='';document.querySelectorAll('[data-texture],[data-food]').forEach(x=>x.classList.remove('selected'));$('solidsNotes').value='';msg('solidsMsg','');$('solidsSheet').classList.add('open')}
 $('solidsSave').onclick=async()=>{if(!sb||!familyId||!user)return msg('solidsMsg','Primero inicia sesión y conecta tu espacio familiar.');const foods=[...document.querySelectorAll('[data-food].selected')].map(x=>x.dataset.food);if(!selectedSolidsTexture&&!foods.length)return msg('solidsMsg','Selecciona cómo estaba preparado o qué alimentos comió.');const payload={family_id:familyId,created_by:user.id,kind:'solids',occurred_at:new Date().toISOString(),details:{texture:selectedSolidsTexture||null,foods,notes:$('solidsNotes').value}};const {error}=await sb.from('entries').insert(payload);if(error)return msg('solidsMsg',error.message);$('solidsSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
 $('solidsSheet').addEventListener('click',e=>{if(e.target===$('solidsSheet'))$('solidsSheet').classList.remove('open')});
@@ -895,7 +896,7 @@ function openBottleSheet(){bottleMilkType='';$('bottleTime').value=localNow();$(
 document.querySelectorAll('[data-milk]').forEach(b=>b.onclick=()=>{bottleMilkType=b.dataset.milk;document.querySelectorAll('[data-milk]').forEach(x=>x.classList.toggle('selected',x===b))});
 function adjustBottleAmount(delta){const field=$('bottleAmount');const current=Number(field.value)||0;field.value=String(Math.min(1000,Math.max(1,current+delta)));}
 $('bottleMinus').onclick=()=>adjustBottleAmount(-5);$('bottlePlus').onclick=()=>adjustBottleAmount(5);
-$('bottleCancel').onclick=()=>$('bottleSheet').classList.remove('open');
+$('bottleCancel').onclick=()=>returnToActivities('bottleSheet');
 $('bottleSheet').addEventListener('click',e=>{if(e.target===$('bottleSheet'))$('bottleSheet').classList.remove('open')});
 $('bottleSave').onclick=async()=>{const amount=Number($('bottleAmount').value);if(!Number.isInteger(amount)||amount<1||amount>1000){msg('bottleMsg','Ingresa una cantidad válida en ml.');$('bottleAmount').focus();return}if(!bottleMilkType){msg('bottleMsg','Selecciona el tipo de leche para continuar.');return}if(!sb||!familyId||!user){msg('bottleMsg','Primero inicia sesión y conecta tu espacio familiar.');return}const payload={family_id:familyId,created_by:user.id,kind:'feed',occurred_at:new Date($('bottleTime').value).toISOString(),details:{subtype:'bottle',amount_ml:amount,milk_type:bottleMilkType,notes:$('bottleNotes').value.trim(),recorded_at:new Date().toISOString()}};const {error}=await sb.from('entries').insert(payload);if(error){msg('bottleMsg','No se pudo guardar: '+error.message);return}$('bottleSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
 
@@ -914,7 +915,7 @@ function resetLactation(side){const x=lactation[side];x.elapsed=0;x.startedAt=nu
 ['left','right'].forEach(side=>{$(side+'Toggle').onclick=()=>toggleLactation(side);$(side+'Reset').onclick=()=>resetLactation(side)});
 $('lactationNotes').addEventListener('input',persistLactation);
 window.addEventListener('pagehide',persistLactation);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistLactation()});
-$('lactationCancel').onclick=()=>{clearInterval(lactationInterval);clearLactationStorage();lactation={left:{elapsed:0,startedAt:null},right:{elapsed:0,startedAt:null},startedAt:null};$('lactationSheet').classList.remove('open')};
+$('lactationCancel').onclick=()=>{clearInterval(lactationInterval);clearLactationStorage();lactation={left:{elapsed:0,startedAt:null},right:{elapsed:0,startedAt:null},startedAt:null};returnToActivities('lactationSheet')};
 $('lactationSave').onclick=async()=>{if(!sb||!familyId||!user){msg('lactationMsg','Primero inicia sesión y conecta tu espacio familiar.');return}for(const side of ['left','right'])if(lactation[side].startedAt){lactation[side].elapsed+=Date.now()-lactation[side].startedAt;lactation[side].startedAt=null}const left=Math.round(lactation.left.elapsed/1000),right=Math.round(lactation.right.elapsed/1000);if(left+right===0){msg('lactationMsg','Inicia al menos uno de los relojes antes de guardar.');return}const payload={family_id:familyId,created_by:user.id,kind:'feed',occurred_at:lactation.startedAt,details:{subtype:'breastfeeding',left_seconds:left,right_seconds:right,left_minutes:Math.round(left/60),right_minutes:Math.round(right/60),total_minutes:Math.round((left+right)/60),notes:$('lactationNotes').value.trim(),recorded_at:new Date().toISOString()}};const {error}=await sb.from('entries').insert(payload);if(error){msg('lactationMsg','No se pudo guardar: '+error.message);return}clearInterval(lactationInterval);clearLactationStorage();lactation={left:{elapsed:0,startedAt:null},right:{elapsed:0,startedAt:null},startedAt:null};$('lactationSheet').classList.remove('open');refreshHome();loadEntries();show('home')};
 $('lactationSheet').addEventListener('click',e=>{if(e.target===$('lactationSheet')){$('lactationSheet').classList.remove('open');clearInterval(lactationInterval)}});
 
