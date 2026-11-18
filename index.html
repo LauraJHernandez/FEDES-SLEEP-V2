@@ -698,7 +698,7 @@ function renderStats(){
   if(ns.length)html+='<p class="muted">Registros: '+ns.map(e=>statTime(e.occurred_at)+' – '+(e.ended_at?statTime(e.ended_at):'')).join(' · ')+'</p>';
  }else if(activeStat==='feeds'){
   const breastSecs=breast.reduce((s,e)=>s+(Number(e.details?.left_seconds)||0)+(Number(e.details?.right_seconds)||0),0),bottleMl=bottles.reduce((s,e)=>s+(Number(e.details?.amount_ml)||0),0),solidMl=solids.reduce((s,e)=>s+(Number(e.details?.amount_ml)||0),0);
-  html+='<div class="stats-kpis">'+statCard(String(feeds.length+solids.length),'Registros de alimentación')+statCard(String(breast.length),'Tomas de pecho')+statCard(fmtMinutes(breastSecs/60),'Tiempo de lactancia')+statCard(String(bottles.length),'Biberones')+statCard(bottleMl+' ml','Leche en biberón')+statCard(String(solids.length),'Registros de sólidos')+'</div>';
+  html+='<div class="stats-kpis">'+statCard(String(breast.length),'Tomas de pecho')+statCard(fmtMinutes(breastSecs/60),'Tiempo de lactancia')+statCard(String(bottles.length),'Biberones')+statCard(bottleMl+' ml','Leche en biberón')+statCard(String(solids.length),'Registros de sólidos')+'</div>';
  }else if(activeStat==='diapers'){
   const counts={'Seco':0,'Orina':0,'Deposición':0,'Ambos':0};diapers.forEach(e=>{const k=e.details?.diaper_type;if(k in counts)counts[k]++});
   html+='<div class="stats-kpis">'+statCard(String(diapers.length),'Cambios registrados')+statCard(String(counts.Orina+counts.Ambos),'Mojados')+statCard(String(counts.Deposición+counts.Ambos),'Sucios')+statCard(String(counts.Seco),'Secos')+'</div>';
