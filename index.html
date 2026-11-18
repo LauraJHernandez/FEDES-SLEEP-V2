@@ -457,6 +457,17 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 .solids-field{font-size:17px;margin:20px 0 8px}.solids-textarea{height:90px;font-size:15px;padding:13px 15px;border-radius:16px;margin-top:9px}
 .solids-actions{display:flex;gap:10px;margin-top:16px}.solids-actions .btn{flex:1;min-height:50px;font-size:15px}
 @media(max-width:500px){.solids-panel{padding:25px 17px calc(28px + env(safe-area-inset-bottom))}.solids-panel>h2{font-size:23px}.solids-choice-section h3{font-size:18px}.solids-chip{font-size:13px;padding:11px 8px}.solids-textarea{height:82px;font-size:15px;padding:12px}}
+
+.feed-chart-card{margin:18px 0 22px;padding:18px;border:1px solid rgba(178,160,255,.18);border-radius:20px;background:rgba(255,255,255,.025)}
+.feed-chart-card h4{font-size:1.08rem;margin:0 0 5px;color:#eeeaff}.feed-chart-card>.muted{font-size:.82rem;margin:0 0 15px}
+.feed-share-bar{height:18px;display:flex;overflow:hidden;border-radius:20px;background:#302c50}.feed-share-bar span{display:block;min-width:2px}
+.feed-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:13px}.feed-legend span{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:#c8c2e7}.feed-legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.feed-daily-chart{display:flex;align-items:flex-end;gap:12px;min-height:175px;overflow-x:auto;padding:10px 2px 4px}
+.feed-day-column{flex:0 0 38px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px}
+.feed-day-column>b{font-size:.8rem}.feed-day-track{height:120px;width:25px;display:flex;flex-direction:column-reverse;justify-content:flex-start;overflow:hidden;border-radius:8px;background:#302c50}
+.feed-day-track i{display:block;width:100%;min-height:0}.feed-day-column small{font-size:.68rem;color:#bcb5dc;white-space:nowrap}
+.feed-side-row{display:grid;grid-template-columns:85px 1fr 65px;align-items:center;gap:10px;margin:15px 0;font-size:.82rem;color:#d4cfee}
+.feed-side-row>div{height:13px;border-radius:20px;background:#302c50;overflow:hidden}.feed-side-row>div i{height:100%;display:block;border-radius:20px}.feed-side-row>b{text-align:right;color:#fff}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
@@ -731,8 +742,21 @@ function renderStats(){
   html+='<div class="stats-kpis">'+statCard(fmtMinutes(mins),'Sueño nocturno')+statCard(String(ns.length),'Periodos nocturnos')+statCard(String(ns.filter(e=>e.details?.end_reason==='Se despertó solo').length),'Despertares espontáneos')+'</div>';
   if(ns.length)html+='<p class="muted">Registros: '+ns.map(e=>statTime(e.occurred_at)+' – '+(e.ended_at?statTime(e.ended_at):'')).join(' · ')+'</p>';
  }else if(activeStat==='feeds'){
-  const breastSecs=breast.reduce((s,e)=>s+(Number(e.details?.left_seconds)||0)+(Number(e.details?.right_seconds)||0),0),bottleMl=bottles.reduce((s,e)=>s+(Number(e.details?.amount_ml)||0),0),solidMl=solids.reduce((s,e)=>s+(Number(e.details?.amount_ml)||0),0);
+  const breastSecs=breast.reduce((s,e)=>s+(Number(e.details?.left_seconds)||0)+(Number(e.details?.right_seconds)||0),0),leftSecs=breast.reduce((s,e)=>s+(Number(e.details?.left_seconds)||0),0),rightSecs=breast.reduce((s,e)=>s+(Number(e.details?.right_seconds)||0),0),bottleMl=bottles.reduce((s,e)=>s+(Number(e.details?.amount_ml)||0),0);
   html+='<div class="stats-kpis">'+statCard(String(breast.length),'Tomas de pecho')+statCard(fmtMinutes(breastSecs/60),'Tiempo de lactancia')+statCard(String(bottles.length),'Biberones')+statCard(bottleMl+' ml','Leche en biberón')+statCard(String(solids.length),'Registros de sólidos')+'</div>';
+  const allFeedTypes=[{label:'Pecho',value:breast.length,color:'#a99aff'},{label:'Biberón',value:bottles.length,color:'#65c9d5'},{label:'Sólidos',value:solids.length,color:'#f0b86b'}],feedTotal=allFeedTypes.reduce((n,x)=>n+x.value,0);
+  html+='<section class="feed-chart-card"><h4>🥣 Distribución de tomas</h4><p class="muted">Proporción de registros por tipo de alimentación</p>';
+  if(feedTotal){html+='<div class="feed-share-bar">'+allFeedTypes.map(x=>'<span style="width:'+(x.value/feedTotal*100)+'%;background:'+x.color+'"></span>').join('')+'</div><div class="feed-legend">'+allFeedTypes.map(x=>'<span><i style="background:'+x.color+'"></i>'+x.label+' <b>'+x.value+'</b></span>').join('')+'</div>'}else html+='<p class="stats-empty">No hay tomas en este periodo.</p>';
+  html+='</section>';
+  const byDay=new Map();feeds.concat(solids).forEach(e=>{const d=new Date(e.occurred_at),key=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');if(!byDay.has(key))byDay.set(key,{label:d.toLocaleDateString('es-CO',{day:'numeric',month:'short'}),breast:0,bottle:0,solids:0});const x=byDay.get(key);if(e.kind==='solids')x.solids++;else if(e.details?.subtype==='breastfeeding')x.breast++;else if(e.details?.subtype==='bottle')x.bottle++});
+  const dayRows=[...byDay.values()],maxDaily=Math.max(1,...dayRows.map(x=>x.breast+x.bottle+x.solids));
+  html+='<section class="feed-chart-card"><h4>📅 Tomas por día</h4><p class="muted">Cantidad de registros diarios, diferenciados por tipo</p>';
+  if(dayRows.length){html+='<div class="feed-daily-chart">'+dayRows.map(x=>{const total=x.breast+x.bottle+x.solids;return '<div class="feed-day-column"><b>'+total+'</b><div class="feed-day-track"><i style="height:'+(x.breast/maxDaily*100)+'%;background:#a99aff"></i><i style="height:'+(x.bottle/maxDaily*100)+'%;background:#65c9d5"></i><i style="height:'+(x.solids/maxDaily*100)+'%;background:#f0b86b"></i></div><small>'+x.label+'</small></div>'}).join('')+'</div><div class="feed-legend"><span><i style="background:#a99aff"></i>Pecho</span><span><i style="background:#65c9d5"></i>Biberón</span><span><i style="background:#f0b86b"></i>Sólidos</span></div>'}else html+='<p class="stats-empty">No hay registros en este periodo.</p>';
+  html+='</section>';
+  html+='<section class="feed-chart-card"><h4>🤱 Tiempo por pecho</h4><p class="muted">Duración acumulada de lactancia materna</p>';
+  const sideMax=Math.max(1,leftSecs,rightSecs);
+  if(breast.length){html+='<div class="feed-side-row"><span>Izquierdo</span><div><i style="width:'+(leftSecs/sideMax*100)+'%;background:#a99aff"></i></div><b>'+fmtMinutes(leftSecs/60)+'</b></div><div class="feed-side-row"><span>Derecho</span><div><i style="width:'+(rightSecs/sideMax*100)+'%;background:#65c9d5"></i></div><b>'+fmtMinutes(rightSecs/60)+'</b></div>'}else html+='<p class="stats-empty">No hay tomas de pecho en este periodo.</p>';
+  html+='</section>';
  }else if(activeStat==='diapers'){
   const counts={'Seco':0,'Orina':0,'Deposición':0,'Ambos':0};diapers.forEach(e=>{const k=e.details?.diaper_type;if(k in counts)counts[k]++});
   html+='<div class="stats-kpis">'+statCard(String(diapers.length),'Cambios registrados')+statCard(String(counts.Seco),'Secos')+statCard(String(counts.Orina),'Mojados')+statCard(String(counts.Deposición),'Sucios')+statCard(String(counts.Ambos),'Variados')+'</div>';
