@@ -685,7 +685,7 @@ function syncNavToVisualViewport(){const vv=window.visualViewport;if(!vv)return;
 if(window.visualViewport){syncNavToVisualViewport();window.visualViewport.addEventListener('resize',syncNavToVisualViewport);window.visualViewport.addEventListener('scroll',syncNavToVisualViewport);window.addEventListener('orientationchange',()=>setTimeout(syncNavToVisualViewport,250))}
 function show(id){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));if(id==='history')loadStatistics();if(id==='home')refreshHome();if(id==='family')loadEntries();window.scrollTo(0,0)}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>show(b.dataset.tab));
-let statsEntries=[],activeStat='sleep';
+let statsEntries=[],activeStat=null;
 const statLabels={sleep:'Resumen del sueño',awake:'Tiempo despierto',night:'Sueño nocturno',feeds:'Tomas',diapers:'Cambios de pañal',care:'Cuidados'};
 function statDuration(e){const d=e.details||{};if(e.kind!=='sleep'||!e.ended_at)return 0;return Math.max(0,Number(d.duration_minutes)||Math.round((new Date(e.ended_at)-new Date(e.occurred_at))/60000))}
 function fmtMinutes(n){n=Math.max(0,Math.round(n||0));const h=Math.floor(n/60),m=n%60;return h? h+' h '+m+' min':m+' min'}
@@ -710,7 +710,8 @@ function renderStats(){
  const naps=sleeps.filter(e=>{const h=new Date(e.occurred_at).getHours();return h>=7&&h<19}),napMins=naps.reduce((s,e)=>s+statDuration(e),0);
  const feeds=rows.filter(e=>e.kind==='feed'),breast=feeds.filter(e=>e.details?.subtype==='breastfeeding'),bottles=feeds.filter(e=>e.details?.subtype==='bottle'),solids=rows.filter(e=>e.kind==='solids');
  const diapers=rows.filter(e=>e.kind==='diaper'),care=rows.filter(e=>e.kind==='symptom'&&(e.details?.symptom==='Temperatura'||e.details?.symptom==='Medicina'||e.details?.medicine_name));
- let html='<h3>'+statLabels[activeStat]+'</h3>';
+ let html=activeStat?'<h3>'+statLabels[activeStat]+'</h3>':'<p class="stats-empty">Selecciona una sección para consultar sus estadísticas.</p>';
+ if(activeStat){
  if(activeStat==='sleep'){
   const days=[],cursor=new Date(start.getFullYear(),start.getMonth(),start.getDate());
   while(cursor<=end&&days.length<400){const key=[cursor.getFullYear(),String(cursor.getMonth()+1).padStart(2,'0'),String(cursor.getDate()).padStart(2,'0')].join('-');days.push({key,label:cursor.toLocaleDateString('es-CO',{day:'numeric',month:'short'}),minutes:0});cursor.setDate(cursor.getDate()+1)}
@@ -785,6 +786,7 @@ function renderStats(){
    html+='</ul><p class="muted care-note">Lista recopilada de los medicamentos guardados en el historial. Confirma cuáles sigue tomando Federico y elimina o actualiza los que ya no correspondan.</p>';
   }else html+='<p class="stats-empty">Aún no hay medicamentos registrados.</p>';
   html+='</section>';
+ }
  }
  $('statsDetail').innerHTML=html;
  if(activeStat==='sleep'){
