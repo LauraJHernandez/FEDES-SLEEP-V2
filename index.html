@@ -468,6 +468,8 @@ nav .plus-tab{width:58px;height:58px;border-radius:50%;background:linear-gradien
 .feed-day-track i{display:block;width:100%;min-height:0}.feed-day-column small{font-size:.68rem;color:#bcb5dc;white-space:nowrap}
 .feed-side-row{display:grid;grid-template-columns:85px 1fr 65px;align-items:center;gap:10px;margin:15px 0;font-size:.82rem;color:#d4cfee}
 .feed-side-row>div{height:13px;border-radius:20px;background:#302c50;overflow:hidden}.feed-side-row>div i{height:100%;display:block;border-radius:20px}.feed-side-row>b{text-align:right;color:#fff}
+
+.solids-stat-row{margin:13px 0;display:grid;gap:7px}.solids-stat-row>div:first-child{display:flex;justify-content:space-between;gap:12px;font-size:.84rem;color:#ded9f4}.solids-stat-row b{color:#fff}.solids-stat-track{height:9px;border-radius:20px;background:#302c50;overflow:hidden}.solids-stat-track i{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#8170d9,#b7a5ff)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
@@ -756,6 +758,21 @@ function renderStats(){
   html+='<section class="feed-chart-card"><h4>🤱 Tiempo por pecho</h4><p class="muted">Duración acumulada de lactancia materna</p>';
   const sideMax=Math.max(1,leftSecs,rightSecs);
   if(breast.length){html+='<div class="feed-side-row"><span>Izquierdo</span><div><i style="width:'+(leftSecs/sideMax*100)+'%;background:#a99aff"></i></div><b>'+fmtMinutes(leftSecs/60)+'</b></div><div class="feed-side-row"><span>Derecho</span><div><i style="width:'+(rightSecs/sideMax*100)+'%;background:#65c9d5"></i></div><b>'+fmtMinutes(rightSecs/60)+'</b></div>'}else html+='<p class="stats-empty">No hay tomas de pecho en este periodo.</p>';
+  html+='</section>';
+  html+='<section class="feed-chart-card"><h4>🥣 Seguimiento de sólidos</h4><p class="muted">Resumen de alimentos registrados en el periodo</p>';
+  const foodGroups=[{name:'Verduras',items:['Zanahoria','Brócoli','Calabaza','Espinaca','Calabacín','Otra verdura']},{name:'Frutas',items:['Banano','Pera','Manzana','Aguacate','Papaya','Otra fruta']},{name:'Proteínas',items:['Pollo','Pescado','Huevo','Carne','Lentejas','Fríjoles']},{name:'Cereales y tubérculos',items:['Papa','Arroz','Avena','Yuca','Pasta','Otro cereal o tubérculo']},{name:'Lácteos',items:['Yogur natural','Queso']}];
+  const foodCounts=new Map(),textureCounts=new Map();
+  solids.forEach(e=>{const d=e.details||{};(Array.isArray(d.foods)?d.foods:[]).forEach(f=>foodCounts.set(f,(foodCounts.get(f)||0)+1));if(d.texture)textureCounts.set(d.texture,(textureCounts.get(d.texture)||0)+1)});
+  const uniqueFoods=foodCounts.size,groupsExplored=foodGroups.filter(g=>g.items.some(f=>foodCounts.has(f))).length;
+  html+='<div class="stats-kpis">'+statCard(String(solids.length),'Registros de sólidos')+statCard(String(uniqueFoods),'Alimentos diferentes')+statCard(String(groupsExplored)+' / 5','Grupos explorados')+'</div></section>';
+  html+='<section class="feed-chart-card"><h4>🥦 Alimentos más registrados</h4><p class="muted">Frecuencia de aparición en los registros</p>';
+  const topFoods=[...foodCounts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10),maxFood=Math.max(1,...topFoods.map(x=>x[1]));
+  if(topFoods.length)html+=topFoods.map(([name,count])=>'<div class="solids-stat-row"><div><span>'+escapeHtml(name)+'</span><b>'+count+'</b></div><div class="solids-stat-track"><i style="width:'+(count/maxFood*100)+'%"></i></div></div>').join('');else html+='<p class="stats-empty">Aún no hay alimentos registrados.</p>';
+  html+='</section><section class="feed-chart-card"><h4>🥣 Texturas y preparaciones</h4><p class="muted">Distribución de las preparaciones registradas</p>';
+  const textureTotal=[...textureCounts.values()].reduce((a,b)=>a+b,0);
+  if(textureTotal){const colors=['#a99aff','#65c9d5','#f0b86b','#ed91bd','#8dc99d','#b6a4ee'];html+='<div class="feed-share-bar">'+[...textureCounts.entries()].map(([name,count],i)=>'<span title="'+escapeHtml(name)+' '+count+'" style="width:'+(count/textureTotal*100)+'%;background:'+colors[i%colors.length]+'"></span>').join('')+'</div><div class="feed-legend">'+[...textureCounts.entries()].map(([name,count],i)=>'<span><i style="background:'+colors[i%colors.length]+'"></i>'+escapeHtml(name)+' <b>'+count+'</b></span>').join('')+'</div>'}else html+='<p class="stats-empty">Aún no hay preparaciones registradas.</p>';
+  html+='</section><section class="feed-chart-card"><h4>🍓 Variedad por grupo de alimentos</h4><p class="muted">Cantidad de alimentos diferentes registrados en cada grupo</p>';
+  html+=foodGroups.map(g=>{const count=g.items.filter(f=>foodCounts.has(f)).length;return '<div class="solids-stat-row"><div><span>'+g.name+'</span><b>'+count+'</b></div><div class="solids-stat-track"><i style="width:'+(count/Math.max(1,Math.max(...foodGroups.map(z=>z.items.length)))*100)+'%"></i></div></div>'}).join('');
   html+='</section>';
  }else if(activeStat==='diapers'){
   const counts={'Seco':0,'Orina':0,'Deposición':0,'Ambos':0};diapers.forEach(e=>{const k=e.details?.diaper_type;if(k in counts)counts[k]++});
