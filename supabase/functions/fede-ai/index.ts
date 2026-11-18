@@ -56,19 +56,19 @@ Deno.serve(async (req) => {
     }
 
     const counts: Record<string, number> = {};
-    const byDay: Record<string, Record<string, number>> = {};
+    const byMonth: Record<string, Record<string, number>> = {};
     for (const entry of allEntries) {
       counts[entry.kind] = (counts[entry.kind] || 0) + 1;
-      const day = String(entry.occurred_at || "").slice(0, 10) || "fecha-desconocida";
-      byDay[day] ||= {};
-      byDay[day][entry.kind] = (byDay[day][entry.kind] || 0) + 1;
+      const month = String(entry.occurred_at || "").slice(0, 7) || "fecha-desconocida";
+      byMonth[month] ||= {};
+      byMonth[month][entry.kind] = (byMonth[month][entry.kind] || 0) + 1;
     }
     const historySummary = {
       totalRecords: allEntries.length,
       oldestRecord: allEntries.length ? allEntries[allEntries.length - 1].occurred_at : null,
       newestRecord: allEntries.length ? allEntries[0].occurred_at : null,
       recordsByCategory: counts,
-      dailyCounts: Object.entries(byDay).sort(([a], [b]) => a.localeCompare(b)).map(([date, kinds]) => ({ date, ...kinds })),
+      monthlyCounts: Object.entries(byMonth).sort(([a], [b]) => a.localeCompare(b)).map(([month, kinds]) => ({ month, ...kinds })),
       historyLimitReached: allEntries.length >= maxEntries
     };
 
@@ -105,7 +105,7 @@ ${JSON.stringify(historySummary)}
 REGISTROS DETALLADOS MÁS RECIENTES (máximo 300):
 ${JSON.stringify(recentEntries)}
 
-Interpreta los datos con cautela. Si la pregunta requiere registros anteriores a los detallados, utiliza el resumen completo solo para conteos/tendencias diarias y explica la limitación: no inventes detalles que no estén incluidos.
+Interpreta los datos con cautela. Si la pregunta requiere registros anteriores a los detallados, utiliza el resumen completo solo para conteos/tendencias mensuales y explica la limitación: no inventes detalles que no estén incluidos.
 `;
 
     const ai = await fetch("https://api.openai.com/v1/responses", {
